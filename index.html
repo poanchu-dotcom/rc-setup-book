@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>RC Setup Book</title>
   <style>
-    :root { --blue:#0a84ff; --ink:#111318; --muted:#6e7180; --line:#e7e7ec; --wash:#f4f4f8; --card:#fff; --green:#32a85a; }
+    :root { --blue:#0a84ff; --ink:#111318; --muted:#6e7180; --line:#e7e7ec; --wash:#f4f4f8; --card:#fff; --green:#32a85a; --amber-bg:#ffefc2; --amber-accent:#d97706; --amber-ink:#92400e; }
     * { box-sizing:border-box; }
     body { margin:0; background:#dedfe5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC",sans-serif; letter-spacing:-.01em; }
     button, input { font:inherit; }
     .phone { min-height:100vh; max-width:430px; margin:auto; background:var(--wash); padding:env(safe-area-inset-top, 20px) 16px calc(88px + env(safe-area-inset-bottom)); }
     header { display:flex; justify-content:space-between; align-items:center; padding:14px 4px 20px; }
     h1 { margin:0; font-size:34px; letter-spacing:-1.3px; }
-    .more { border:0; background:transparent; color:var(--blue); font-size:17px; padding:8px 3px; }
+    .more { border:0; background:transparent; color:var(--blue); font-size:17px; padding:8px 3px; cursor:pointer; }
     .model-card { background:linear-gradient(135deg,#18202d,#323e51); color:#fff; border-radius:24px; padding:21px; box-shadow:0 10px 24px #1c223122; }
     .eyebrow { margin:0 0 6px; color:#bfc8d9; font-size:13px; font-weight:600; }
     .model-card h2 { margin:0; font-size:25px; }
@@ -22,7 +22,8 @@
     .model-meta span { font-size:13px; color:#d4dbe6; }
     .saved { color:#96e6b1 !important; font-weight:600; }
     .setup-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
-    .setup-action { border:0; border-radius:12px; background:#ffffff20; color:#fff; padding:12px 8px; font-size:14px; font-weight:600; }
+    .setup-action { border:0; border-radius:12px; background:#ffffff20; color:#fff; padding:12px 8px; font-size:14px; font-weight:600; cursor:pointer; }
+    .setup-action:active { background:#ffffff35; }
     .section-title { display:flex; align-items:center; justify-content:space-between; margin:28px 4px 10px; }
     .section-title h3 { margin:0; font-size:20px; letter-spacing:-.45px; }
     .section-title small { color:var(--muted); font-size:13px; }
@@ -37,29 +38,49 @@
     .single .row { grid-template-columns:1fr 184px; }
     .add { width:100%; border:0; background:transparent; color:var(--blue); padding:17px; font-size:16px; font-weight:600; }
     .bottom { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:min(430px,100%); padding:11px 16px calc(11px + env(safe-area-inset-bottom)); background:#f4f4f8eF; backdrop-filter:blur(12px); border-top:1px solid #e6e6eb; }
-    .save { width:100%; border:0; border-radius:15px; padding:16px; background:var(--blue); color:#fff; font-size:17px; font-weight:650; box-shadow:0 4px 10px #0a84ff35; }
+    .save { width:100%; border:0; border-radius:15px; padding:16px; background:var(--blue); color:#fff; font-size:17px; font-weight:650; box-shadow:0 4px 10px #0a84ff35; cursor:pointer; }
+    .save:active { opacity:.9; }
     .history { margin-top:10px; }
-    .history-item { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; border:0; border-bottom:1px solid var(--line); background:transparent; padding:14px 16px; text-align:left; color:var(--ink); }
+    .history-item { display:flex; align-items:center; border-bottom:1px solid var(--line); }
     .history-item:last-child { border-bottom:0; }
     .history-item.active { background:#edf6ff; }
+    .history-select { flex:1; display:flex; align-items:center; justify-content:space-between; gap:12px; border:0; background:transparent; padding:14px 8px 14px 16px; text-align:left; color:var(--ink); cursor:pointer; }
     .history-name { display:block; font-size:15px; font-weight:600; }
     .history-date { display:block; margin-top:3px; color:var(--muted); font-size:12px; }
     .history-arrow { color:var(--blue); font-size:18px; }
-    dialog { width:min(430px, calc(100% - 24px)); max-height:80vh; padding:0; border:0; border-radius:22px; background:var(--wash); color:var(--ink); box-shadow:0 18px 48px #11182755; }
+    .chassis-list { margin:12px 16px; overflow:hidden; border-radius:14px; background:var(--card); }
+    .chassis-item { display:flex; align-items:center; border-bottom:1px solid var(--line); }
+    .chassis-item:last-child { border-bottom:0; }
+    .chassis-item.active { background:#edf6ff; }
+    .chassis-select { flex:1; display:flex; align-items:center; justify-content:space-between; border:0; background:transparent; color:var(--ink); padding:14px 8px 14px 14px; text-align:left; cursor:pointer; }
+    .chassis-item small { color:var(--muted); }
+    .delete-inline { border:0; border-left:1px solid var(--line); background:transparent; color:#d83a3a; padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .delete-inline:disabled { color:#b8bac4; cursor:not-allowed; }
+    .new-chassis { display:grid; grid-template-columns:1fr auto; gap:8px; padding:0 16px 18px; }
+    .new-chassis input { min-width:0; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--card); color:var(--ink); }
+    .new-chassis button { border:0; border-radius:10px; padding:10px 14px; background:var(--blue); color:#fff; font-weight:600; cursor:pointer; }
+    dialog { width:min(430px, calc(100% - 24px)); max-height:84vh; padding:0; border:0; border-radius:22px; background:var(--wash); color:var(--ink); box-shadow:0 18px 48px #11182755; }
     dialog::backdrop { background:#11182775; }
-    .dialog-head { display:flex; align-items:center; justify-content:space-between; padding:18px 18px 12px; background:var(--card); }
+    .dialog-head { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; padding:16px 18px 12px; background:var(--card); border-bottom:1px solid var(--line); }
     .dialog-head h2 { margin:0; font-size:20px; }
-    .close { border:0; background:transparent; color:var(--blue); padding:7px; font-size:15px; }
-    .compare-choice { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:12px 16px; }
+    .close { border:0; background:transparent; color:var(--blue); padding:7px; font-size:15px; font-weight:600; cursor:pointer; }
+    .compare-choice { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:12px 16px 8px; }
     .compare-choice label { display:flex; flex-direction:column; gap:5px; color:var(--muted); font-size:12px; }
     select { width:100%; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); padding:9px; font-size:14px; }
+    .compare-toolbar { display:flex; align-items:center; justify-content:space-between; padding:4px 18px 10px; font-size:13px; color:var(--muted); }
+    .compare-filter { display:inline-flex; align-items:center; gap:6px; color:var(--ink); font-weight:500; cursor:pointer; }
+    .compare-filter input { accent-color:var(--amber-accent); width:16px; height:16px; margin:0; }
+    .diff-badge { display:inline-block; padding:2px 8px; border-radius:99px; background:var(--amber-bg); color:var(--amber-ink); font-size:12px; font-weight:650; }
     .comparison { margin:0 16px 16px; overflow:hidden; background:var(--card); border-radius:14px; }
-    .comparison-row { display:grid; grid-template-columns:1.2fr .8fr .8fr; padding:11px 12px; border-bottom:1px solid var(--line); font-size:13px; }
+    .comparison-row { display:grid; grid-template-columns:1.2fr .8fr .8fr; align-items:center; padding:11px 12px; border-bottom:1px solid var(--line); font-size:13px; border-left:4px solid transparent; }
     .comparison-row:last-child { border-bottom:0; }
-    .comparison-row.changed { background:#fff8e5; }
+    .comparison-row.changed { background:var(--amber-bg); border-left-color:var(--amber-accent); }
+    .comparison-row.changed span:first-child { color:var(--amber-ink); font-weight:700; }
     .comparison-row span:not(:first-child) { text-align:center; color:var(--blue); font-weight:600; }
-    .comparison-row.heading { color:var(--muted); font-size:12px; }
-    .comparison-row.heading span { color:var(--muted); font-weight:500; }
+    .comparison-row.changed span:not(:first-child) { color:var(--amber-ink); font-weight:750; }
+    .comparison-row.heading { color:var(--muted); font-size:12px; background:#fafafa; }
+    .comparison-row.heading span { color:var(--muted); font-weight:600; }
+    .comparison-empty { padding:24px 16px; text-align:center; color:var(--muted); font-size:14px; }
     .toast { position:fixed; z-index:2; left:50%; transform:translate(-50%,20px); bottom:86px; opacity:0; transition:.25s; background:#202126; color:#fff; padding:10px 15px; border-radius:22px; font-size:14px; pointer-events:none; }
     .toast.show { transform:translate(-50%,0); opacity:1; }
     @media (min-width:431px) { .phone { min-height:844px; margin-top:12px; margin-bottom:12px; border-radius:34px; box-shadow:0 18px 55px #29304338; } }
@@ -67,12 +88,12 @@
 </head>
 <body>
   <main class="phone">
-    <header><h1>我的設定</h1><button class="more" type="button" aria-label="更多選項">•••</button></header>
+    <header><h1>RC Setup Record</h1><button class="more" id="manage-chassis" type="button">車架</button></header>
     <section class="model-card" aria-label="目前的 RC 模型設定">
-      <p class="eyebrow">目前設定</p><h2>RC Touring · <input class="setup-name" id="setup-title" value="Setup 01" aria-label="設定名稱"></h2>
+      <p class="eyebrow">目前車架／設定</p><h2><input class="setup-name" id="chassis-title" value="RC Touring" aria-label="車架名稱"> · <input class="setup-name" id="setup-title" value="Setup 01" aria-label="設定名稱"></h2>
       <div class="model-meta"><span id="created-at">建立：—</span><span class="saved" id="status">已儲存</span></div>
       <div class="model-meta"><span id="updated-at">最後儲存：—</span><span></span></div>
-      <div class="setup-actions"><button class="setup-action" id="new-version" type="button">另存新版本</button><button class="setup-action" id="compare" type="button">比較設定</button></div>
+      <div class="setup-actions"><button class="setup-action" id="new-version" type="button">新建設定</button><button class="setup-action" id="compare" type="button">設定比較</button></div>
     </section>
 
     <div class="section-title"><h3>已儲存版本</h3><small id="history-count">1 個版本</small></div>
@@ -95,16 +116,16 @@
       <div class="row"><span class="name">避震墊片</span><input class="value" value="2" aria-label="避震墊片 前"><input class="value" value="0" aria-label="避震墊片 後"></div>
     </section>
 
-    <div class="section-title"><h3>差速器</h3></div>
-    <section class="group single"><div class="row"><span class="name">後差速</span><input class="value" value="7k" aria-label="後差速"></div></section>
+    <div class="section-title"><h3>差速器</h3><small>K</small></div>
+    <section class="group single"><div class="row"><span class="name">前差速 <span class="unit">K</span></span><input class="value" value="" placeholder="未設定" aria-label="前差速，單位 K"></div><div class="row"><span class="name">後差速 <span class="unit">K</span></span><input class="value" value="7" aria-label="後差速，單位 K"></div></section>
 
     <div class="section-title"><h3>擺臂墊片</h3><small>內 / 外</small></div>
     <section class="group">
       <div class="row head"><span></span><span>內</span><span>外</span></div>
-      <div class="row"><span class="name">前上擺墊片</span><input class="value" value="1" aria-label="前上擺墊片 內"><input class="value" value="2" aria-label="前上擺墊片 外"></div>
-      <div class="row"><span class="name">前下擺墊片</span><input class="value" value="1" aria-label="前下擺墊片 內"><input class="value" value="1" aria-label="前下擺墊片 外"></div>
-      <div class="row"><span class="name">後上擺墊片</span><input class="value" value="1" aria-label="後上擺墊片 內"><input class="value" value="2" aria-label="後上擺墊片 外"></div>
-      <div class="row"><span class="name">後下擺墊片</span><input class="value" value="1" aria-label="後下擺墊片 內"><input class="value" value="1" aria-label="後下擺墊片 外"></div>
+      <div class="row"><span class="name">前上擺墊片 <span class="unit">mm</span></span><input class="value" value="1" aria-label="前上擺墊片 內，單位 mm"><input class="value" value="2" aria-label="前上擺墊片 外，單位 mm"></div>
+      <div class="row"><span class="name">前下擺墊片 <span class="unit">mm</span></span><input class="value" value="1" aria-label="前下擺墊片 內，單位 mm"><input class="value" value="1" aria-label="前下擺墊片 外，單位 mm"></div>
+      <div class="row"><span class="name">後上擺墊片 <span class="unit">mm</span></span><input class="value" value="1" aria-label="後上擺墊片 內，單位 mm"><input class="value" value="2" aria-label="後上擺墊片 外，單位 mm"></div>
+      <div class="row"><span class="name">後下擺墊片 <span class="unit">mm</span></span><input class="value" value="1" aria-label="後下擺墊片 內，單位 mm"><input class="value" value="1" aria-label="後下擺墊片 外，單位 mm"></div>
     </section>
   </main>
   <div class="toast" id="toast" role="status" aria-live="polite">設定已儲存</div>
@@ -115,60 +136,246 @@
       <label>設定 A<select id="compare-a"></select></label>
       <label>設定 B<select id="compare-b"></select></label>
     </div>
+    <div class="compare-toolbar">
+      <label class="compare-filter"><input type="checkbox" id="diff-only"> 只顯示有差異項目</label>
+      <span class="diff-badge" id="diff-count">0 項差異</span>
+    </div>
     <div class="comparison" id="comparison" aria-live="polite"></div>
+  </dialog>
+  <dialog id="chassis-dialog">
+    <div class="dialog-head"><h2>車架管理</h2><button class="close" type="button" data-chassis-close>完成</button></div>
+    <div class="chassis-list" id="chassis-list"></div>
+    <div class="new-chassis"><input id="new-chassis-name" placeholder="新車架名稱" aria-label="新車架名稱"><button class="btn-primary" id="add-chassis" type="button">新增</button></div>
   </dialog>
   <script>
     const inputs = [...document.querySelectorAll('.value')];
-    const storeKey = 'rc-setup-history-v2';
+    const storeKey = 'rc-setup-book-v3';
+    const legacyStoreKey = 'rc-setup-history-v2';
     const labels = inputs.map(input => input.getAttribute('aria-label').split('，')[0]);
     const baseline = inputs.map(input => input.value);
-    const legacy = localStorage.getItem('rc-setup-01');
     const now = new Date().toISOString();
-    let versions = JSON.parse(localStorage.getItem(storeKey) || 'null') || [{ id: crypto.randomUUID(), name:'Setup 01', createdAt:now, updatedAt:now, values: legacy ? JSON.parse(legacy) : baseline }];
-    versions = versions.map(version => ({ ...version, createdAt:version.createdAt || version.date || now, updatedAt:version.updatedAt || version.date || now }));
-    let activeId = versions[0].id;
+    const oldVersions = JSON.parse(localStorage.getItem(legacyStoreKey) || 'null');
+    const oldValues = JSON.parse(localStorage.getItem('rc-setup-01') || 'null');
+    const migrateValues = values => values && values.length === inputs.length - 1 ? [...values.slice(0, 14), '', values[14], ...values.slice(15)] : (values || baseline);
+
+    let appData = JSON.parse(localStorage.getItem(storeKey) || 'null') || {
+      activeChassisId: crypto.randomUUID(), activeSetupId: null, chassis: []
+    };
+    if (!appData.chassis.length) {
+      const setups = (oldVersions || [{ id:crypto.randomUUID(), name:'Setup 01', date:now, values:oldValues || baseline }]).map(version => ({
+        id:version.id || crypto.randomUUID(), name:version.name || 'Setup 01', createdAt:version.createdAt || version.date || now,
+        updatedAt:version.updatedAt || version.date || now, values:migrateValues(version.values)
+      }));
+      appData.chassis = [{ id:appData.activeChassisId, name:'RC Touring', createdAt:now, setups }];
+      appData.activeSetupId = setups[0].id;
+    }
+    appData.chassis.forEach(chassis => chassis.setups = chassis.setups.map(setup => ({ ...setup, createdAt:setup.createdAt || setup.date || now, updatedAt:setup.updatedAt || setup.date || now, values:migrateValues(setup.values) })));
+
+    let activeChassisId = appData.activeChassisId || appData.chassis[0].id;
+    let activeId = appData.activeSetupId || appData.chassis[0].setups[0].id;
     const toast = document.querySelector('#toast'), status = document.querySelector('#status');
-    const saveHistory = () => localStorage.setItem(storeKey, JSON.stringify(versions));
-    const activeVersion = () => versions.find(version => version.id === activeId);
+    const activeChassis = () => appData.chassis.find(chassis => chassis.id === activeChassisId);
+    const setups = () => activeChassis().setups;
+    const activeVersion = () => setups().find(version => version.id === activeId);
+    const saveHistory = () => { appData.activeChassisId = activeChassisId; appData.activeSetupId = activeId; localStorage.setItem(storeKey, JSON.stringify(appData)); };
     const readValues = () => inputs.map(input => input.value.trim());
     const formatDate = date => new Intl.DateTimeFormat('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
+    const showToast = message => { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
+
     const loadVersion = id => {
-      const version = versions.find(item => item.id === id); if (!version) return;
+      const version = setups().find(item => item.id === id); if (!version) return;
       activeId = id; version.values.forEach((value, i) => inputs[i].value = value);
+      document.querySelector('#chassis-title').value = activeChassis().name;
       document.querySelector('#setup-title').value = version.name;
       document.querySelector('#created-at').textContent = `建立：${formatDate(version.createdAt)}`;
       document.querySelector('#updated-at').textContent = `最後儲存：${formatDate(version.updatedAt)}`;
       status.textContent = '已載入'; renderHistory();
     };
+
+    const deleteVersion = id => {
+      if (setups().length <= 1) return;
+      const target = setups().find(item => item.id === id);
+      if (!target || !confirm(`確定要刪除設定版本「${target.name}」嗎？`)) return;
+      const idx = setups().findIndex(item => item.id === id);
+      setups().splice(idx, 1);
+      if (activeId === id) {
+        activeId = setups()[Math.min(idx, setups().length - 1)].id;
+        loadVersion(activeId);
+      } else {
+        renderHistory();
+      }
+      saveHistory();
+      showToast(`已刪除「${target.name}」`);
+    };
+
     const renderHistory = () => {
       const history = document.querySelector('#history');
-      history.innerHTML = versions.map(version => `<button class="history-item ${version.id === activeId ? 'active' : ''}" type="button" data-id="${version.id}"><span><span class="history-name">${version.name}</span><span class="history-date">最後儲存：${formatDate(version.updatedAt)}${version.id === activeId ? ' · 目前編輯中' : ''}</span></span><span class="history-arrow">›</span></button>`).join('');
-      document.querySelector('#history-count').textContent = `${versions.length} 個版本`;
+      const canDelete = setups().length > 1;
+      history.innerHTML = setups().map(version => `
+        <div class="history-item ${version.id === activeId ? 'active' : ''}">
+          <button class="history-select" type="button" data-id="${version.id}">
+            <span>
+              <span class="history-name">${version.name}</span>
+              <span class="history-date">最後儲存：${formatDate(version.updatedAt)}${version.id === activeId ? ' · 目前編輯中' : ''}</span>
+            </span>
+            <span class="history-arrow">›</span>
+          </button>
+          <button class="delete-inline" type="button" data-del-version="${version.id}" ${canDelete ? '' : 'disabled'} aria-label="刪除 ${version.name}">刪除</button>
+        </div>
+      `).join('');
+      document.querySelector('#history-count').textContent = `${setups().length} 個版本`;
       history.querySelectorAll('[data-id]').forEach(button => button.addEventListener('click', () => loadVersion(button.dataset.id)));
+      history.querySelectorAll('[data-del-version]').forEach(button => button.addEventListener('click', () => deleteVersion(button.dataset.delVersion)));
     };
-    const showToast = message => { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
-    document.querySelector('#save').addEventListener('click', () => {
-      const version = activeVersion(); version.name = document.querySelector('#setup-title').value.trim() || '未命名設定'; version.values = readValues(); version.updatedAt = new Date().toISOString(); saveHistory();
-      status.textContent = '剛剛儲存'; renderHistory(); showToast('設定已更新');
-    });
+
+    const saveCurrentSetup = () => {
+      const version = activeVersion();
+      activeChassis().name = document.querySelector('#chassis-title').value.trim() || '未命名車架';
+      version.name = document.querySelector('#setup-title').value.trim() || '未命名設定';
+      version.values = readValues();
+      version.updatedAt = new Date().toISOString();
+      saveHistory();
+      status.textContent = '剛剛儲存';
+      renderHistory();
+      showToast('設定已更新');
+    };
+
+    document.querySelector('#save').addEventListener('click', saveCurrentSetup);
+
     document.querySelector('#new-version').addEventListener('click', () => {
       const createdAt = new Date().toISOString();
-      const version = { id:crypto.randomUUID(), name:`Setup ${String(versions.length + 1).padStart(2,'0')}`, createdAt, updatedAt:createdAt, values:readValues() };
-      versions.unshift(version); activeId = version.id; saveHistory(); loadVersion(version.id);
+      const version = { id:crypto.randomUUID(), name:`Setup ${String(setups().length + 1).padStart(2,'0')}`, createdAt, updatedAt:createdAt, values:readValues() };
+      setups().unshift(version); activeId = version.id; saveHistory(); loadVersion(version.id);
       status.textContent = '新版本'; showToast('已建立新版本');
     });
-    const dialog = document.querySelector('#compare-dialog'), selectA = document.querySelector('#compare-a'), selectB = document.querySelector('#compare-b');
-    const renderComparison = () => {
-      const a = versions.find(version => version.id === selectA.value), b = versions.find(version => version.id === selectB.value); if (!a || !b) return;
-      document.querySelector('#comparison').innerHTML = `<div class="comparison-row heading"><span>參數</span><span>${a.name}</span><span>${b.name}</span></div>` + labels.map((label, index) => `<div class="comparison-row ${a.values[index] !== b.values[index] ? 'changed' : ''}"><span>${label}</span><span>${a.values[index]}</span><span>${b.values[index]}</span></div>`).join('');
-    };
-    document.querySelector('#compare').addEventListener('click', () => {
-      const options = versions.map(version => `<option value="${version.id}">${version.name} · ${formatDate(version.updatedAt)}</option>`).join('');
-      selectA.innerHTML = options; selectB.innerHTML = options; selectA.value = activeId;
-      selectB.value = versions.find(version => version.id !== activeId)?.id || activeId; renderComparison(); dialog.showModal();
+
+    // 輸入框鍵盤快速鍵與操作優化
+    inputs.forEach((input, idx) => {
+      input.setAttribute('enterkeyhint', idx < inputs.length - 1 ? 'next' : 'done');
+      input.addEventListener('focus', () => input.select());
+      input.addEventListener('input', () => { status.textContent = '未儲存變更'; });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const nextIdx = e.shiftKey ? idx - 1 : idx + 1;
+          if (inputs[nextIdx]) {
+            inputs[nextIdx].focus();
+          } else {
+            input.blur();
+          }
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          const raw = input.value.trim();
+          const num = parseFloat(raw);
+          if (raw !== '' && !Number.isNaN(num) && /^-?\d+(\.\d+)?$/.test(raw)) {
+            e.preventDefault();
+            const step = e.shiftKey ? 0.5 : 0.1;
+            const delta = e.key === 'ArrowUp' ? step : -step;
+            const decimals = Math.max((raw.split('.')[1] || '').length, 1);
+            const nextVal = Number((num + delta).toFixed(decimals));
+            input.value = String(nextVal);
+            input.select();
+            status.textContent = '未儲存變更';
+          }
+        } else if (e.key === 'Escape') {
+          input.blur();
+        }
+      });
     });
-    selectA.addEventListener('change', renderComparison); selectB.addEventListener('change', renderComparison);
+
+    // 標題欄按 Enter 跳進第一個數值框
+    ['#chassis-title', '#setup-title'].forEach(sel => {
+      document.querySelector(sel).addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); inputs[0]?.focus(); }
+      });
+    });
+
+    // 全域 Ctrl+S / Cmd+S 快速儲存
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        saveCurrentSetup();
+      }
+    });
+
+    // 設定比較與差異高亮
+    const dialog = document.querySelector('#compare-dialog'), selectA = document.querySelector('#compare-a'), selectB = document.querySelector('#compare-b');
+    const diffOnlyCheckbox = document.querySelector('#diff-only'), diffCountBadge = document.querySelector('#diff-count');
+    const renderComparison = () => {
+      const a = setups().find(version => version.id === selectA.value), b = setups().find(version => version.id === selectB.value); if (!a || !b) return;
+      const rows = labels.map((label, index) => {
+        const valA = a.values[index] || '—';
+        const valB = b.values[index] || '—';
+        const isChanged = (a.values[index] || '') !== (b.values[index] || '');
+        return { label, valA, valB, isChanged };
+      });
+      const changedCount = rows.filter(r => r.isChanged).length;
+      diffCountBadge.textContent = `${changedCount} 項差異`;
+      const visibleRows = diffOnlyCheckbox.checked ? rows.filter(r => r.isChanged) : rows;
+      const bodyHtml = visibleRows.length
+        ? visibleRows.map(r => `<div class="comparison-row ${r.isChanged ? 'changed' : ''}"><span>${r.label}</span><span>${r.valA}</span><span>${r.valB}</span></div>`).join('')
+        : `<div class="comparison-empty">兩組設定的所有參數皆相同</div>`;
+      document.querySelector('#comparison').innerHTML = `<div class="comparison-row heading"><span>參數</span><span>${a.name}</span><span>${b.name}</span></div>` + bodyHtml;
+    };
+
+    document.querySelector('#compare').addEventListener('click', () => {
+      const options = setups().map(version => `<option value="${version.id}">${version.name} · ${formatDate(version.updatedAt)}</option>`).join('');
+      selectA.innerHTML = options; selectB.innerHTML = options; selectA.value = activeId;
+      selectB.value = setups().find(version => version.id !== activeId)?.id || activeId; renderComparison(); dialog.showModal();
+    });
+    selectA.addEventListener('change', renderComparison);
+    selectB.addEventListener('change', renderComparison);
+    diffOnlyCheckbox.addEventListener('change', renderComparison);
     document.querySelector('[data-close]').addEventListener('click', () => dialog.close());
+
+    // 車架管理（含刪除車架）
+    const chassisDialog = document.querySelector('#chassis-dialog');
+    const deleteChassis = id => {
+      if (appData.chassis.length <= 1) return;
+      const target = appData.chassis.find(c => c.id === id);
+      if (!target || !confirm(`確定要刪除車架「${target.name}」及其所有 ${target.setups.length} 個設定版本嗎？`)) return;
+      const idx = appData.chassis.findIndex(c => c.id === id);
+      appData.chassis.splice(idx, 1);
+      if (activeChassisId === id) {
+        activeChassisId = appData.chassis[Math.min(idx, appData.chassis.length - 1)].id;
+        activeId = activeChassis().setups[0].id;
+        loadVersion(activeId);
+      }
+      saveHistory();
+      renderChassis();
+      showToast(`已刪除車架「${target.name}」`);
+    };
+
+    const renderChassis = () => {
+      const canDelete = appData.chassis.length > 1;
+      document.querySelector('#chassis-list').innerHTML = appData.chassis.map(chassis => `
+        <div class="chassis-item ${chassis.id === activeChassisId ? 'active' : ''}">
+          <button class="chassis-select" data-chassis-id="${chassis.id}" type="button">
+            <span>${chassis.name}<br><small>${chassis.setups.length} 個設定版本</small></span>
+            <span class="history-arrow">›</span>
+          </button>
+          <button class="delete-inline" type="button" data-del-chassis="${chassis.id}" ${canDelete ? '' : 'disabled'} aria-label="刪除車架 ${chassis.name}">刪除</button>
+        </div>
+      `).join('');
+      document.querySelectorAll('[data-chassis-id]').forEach(button => button.addEventListener('click', () => {
+        activeChassisId = button.dataset.chassisId; activeId = activeChassis().setups[0].id; saveHistory(); loadVersion(activeId); chassisDialog.close();
+      }));
+      document.querySelectorAll('[data-del-chassis]').forEach(button => button.addEventListener('click', () => deleteChassis(button.dataset.delChassis)));
+    };
+
+    document.querySelector('#manage-chassis').addEventListener('click', () => { renderChassis(); chassisDialog.showModal(); });
+    document.querySelector('[data-chassis-close]').addEventListener('click', () => chassisDialog.close());
+    const addChassisAction = () => {
+      const nameInput = document.querySelector('#new-chassis-name');
+      const name = nameInput.value.trim() || `車架 ${appData.chassis.length + 1}`;
+      const createdAt = new Date().toISOString();
+      const setup = { id:crypto.randomUUID(), name:'Setup 01', createdAt, updatedAt:createdAt, values:[...baseline] };
+      const chassis = { id:crypto.randomUUID(), name, createdAt, setups:[setup] };
+      appData.chassis.unshift(chassis); activeChassisId = chassis.id; activeId = setup.id; nameInput.value = '';
+      saveHistory(); loadVersion(activeId); chassisDialog.close(); showToast('已建立新車架');
+    };
+    document.querySelector('#add-chassis').addEventListener('click', addChassisAction);
+    document.querySelector('#new-chassis-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addChassisAction(); } });
+
     loadVersion(activeId);
   </script>
 </body>
