@@ -23,6 +23,10 @@
     .meta-input { width:100%; border:0; border-bottom:1px solid #ffffff55; border-radius:0; background:transparent; color:#fff; padding:3px 0 5px; font-size:16px; font-weight:600; outline:none; color-scheme:dark; }
     .meta-input::placeholder { color:#ffffff60; font-weight:400; }
     .meta-input:focus { border-bottom-color:#fff; }
+    .track-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+    .track-chip { border:1px solid #ffffff30; border-radius:99px; background:#ffffff14; color:#e5ecf7; padding:3px 10px; font-size:12px; font-weight:600; cursor:pointer; transition:.15s; }
+    .track-chip:active { transform:scale(.96); }
+    .track-chip.active { background:#fff; color:#18202d; border-color:#fff; }
     .model-meta { display:flex; justify-content:space-between; align-items:flex-end; margin-top:18px; }
     .model-meta span { font-size:13px; color:#d4dbe6; }
     .saved { color:#96e6b1 !important; font-weight:600; }
@@ -33,18 +37,32 @@
     .section-title h3 { margin:0; font-size:20px; letter-spacing:-.45px; }
     .section-title small { color:var(--muted); font-size:13px; }
     .group { overflow:hidden; background:var(--card); border-radius:16px; box-shadow:0 1px 1px #11111108; }
-    .row { display:grid; grid-template-columns:1fr 92px 92px; align-items:center; min-height:57px; margin-left:16px; border-bottom:1px solid var(--line); }
+    .row { display:grid; grid-template-columns:1fr 86px 86px; align-items:center; min-height:57px; margin-left:16px; padding-right:6px; border-bottom:1px solid var(--line); }
     .row:last-child { border-bottom:0; }
-    .name { font-size:16px; font-weight:520; }
-    .unit { margin-left:5px; color:var(--muted); font-size:12px; font-weight:400; }
+    .name { font-size:15.5px; font-weight:520; }
+    .en-sub { color:var(--muted); font-size:13px; font-weight:500; }
+    .unit { margin-left:4px; color:var(--muted); font-size:12px; font-weight:400; }
     .value { border:0; width:100%; background:transparent; padding:8px 4px; text-align:center; color:var(--blue); font-size:16px; font-weight:600; outline:none; }
     .value:focus { background:#eaf4ff; border-radius:8px; }
     .head { min-height:34px; border:0; color:var(--muted); font-size:12px; font-weight:500; }
     .single .row { grid-template-columns:1fr 184px; }
+    .diff-control { display:flex; align-items:center; gap:6px; padding-right:8px; }
+    .diff-control .value { flex:1; min-width:0; }
+    .spool-btn { border:1px solid #d5d8e2; border-radius:8px; background:#f6f7fa; color:var(--muted); padding:6px 10px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.15s; }
+    .spool-btn.active { background:var(--blue); border-color:var(--blue); color:#fff; }
     .add { width:100%; border:0; background:transparent; color:var(--blue); padding:17px; font-size:16px; font-weight:600; }
     .bottom { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:min(430px,100%); padding:11px 16px calc(11px + env(safe-area-inset-bottom)); background:#f4f4f8eF; backdrop-filter:blur(12px); border-top:1px solid #e6e6eb; }
     .save { width:100%; border:0; border-radius:15px; padding:16px; background:var(--blue); color:#fff; font-size:17px; font-weight:650; box-shadow:0 4px 10px #0a84ff35; cursor:pointer; }
     .save:active { opacity:.9; }
+    /* 束角專用鍵盤負號快捷列 */
+    .sign-bar { position:fixed; z-index:10; left:50%; transform:translateX(-50%); bottom:0; width:min(430px,100%); display:none; align-items:center; justify-content:space-between; gap:8px; padding:8px 12px; background:#d1d5db; border-top:1px solid #b8bec7; box-shadow:0 -4px 14px #00000018; }
+    .sign-bar.show { display:flex; }
+    .sign-bar-label { font-size:12px; color:#374151; font-weight:600; padding-left:4px; }
+    .sign-bar-actions { display:flex; align-items:center; gap:6px; }
+    .sign-key { border:0; border-radius:8px; background:#fff; color:var(--ink); min-width:54px; height:38px; padding:0 12px; font-size:18px; font-weight:700; box-shadow:0 1px 2px #00000025; cursor:pointer; }
+    .sign-key:active { background:#e5e7eb; }
+    .sign-key.primary { background:var(--blue); color:#fff; font-size:14px; font-weight:600; }
+    .sign-key.secondary { background:#e5e7eb; color:#374151; font-size:13px; font-weight:600; }
     .history { margin-top:10px; }
     .history-item { display:flex; align-items:center; border-bottom:1px solid var(--line); }
     .history-item:last-child { border-bottom:0; }
@@ -79,7 +97,7 @@
     .compare-filter input { accent-color:var(--amber-accent); width:16px; height:16px; margin:0; }
     .diff-badge { display:inline-block; padding:2px 8px; border-radius:99px; background:var(--amber-bg); color:var(--amber-ink); font-size:12px; font-weight:650; }
     .comparison { margin:0 16px 16px; overflow:hidden; background:var(--card); border-radius:14px; }
-    .comparison-row { display:grid; grid-template-columns:1.2fr .8fr .8fr; align-items:center; padding:11px 12px; border-bottom:1px solid var(--line); font-size:13px; border-left:4px solid transparent; }
+    .comparison-row { display:grid; grid-template-columns:1.25fr .78fr .78fr; align-items:center; padding:11px 12px; border-bottom:1px solid var(--line); font-size:13px; border-left:4px solid transparent; }
     .comparison-row:last-child { border-bottom:0; }
     .comparison-row.changed { background:var(--amber-bg); border-left-color:var(--amber-accent); }
     .comparison-row.changed span:first-child { color:var(--amber-ink); font-weight:700; }
@@ -101,12 +119,20 @@
       <div class="meta-fields">
         <label class="meta-field">
           <span>場地</span>
-          <input class="meta-input" id="setup-track" type="text" placeholder="輸入場地名稱" aria-label="場地">
+          <input class="meta-input" id="setup-track" type="text" placeholder="點選或輸入場地" aria-label="場地">
         </label>
         <label class="meta-field">
           <span>日期</span>
           <input class="meta-input" id="setup-date" type="date" aria-label="日期">
         </label>
+        <div class="meta-field full">
+          <div class="track-chips" id="track-chips" aria-label="常用場地快速選單">
+            <button class="track-chip" type="button" data-track="萬板">萬板</button>
+            <button class="track-chip" type="button" data-track="二重">二重</button>
+            <button class="track-chip" type="button" data-track="柑園">柑園</button>
+            <button class="track-chip" type="button" data-track="道南">道南</button>
+          </div>
+        </div>
         <label class="meta-field full">
           <span>備註</span>
           <input class="meta-input" id="setup-note" type="text" placeholder="輸入備註（輪胎、胎水、測試重點）" aria-label="備註">
@@ -124,9 +150,9 @@
     <section class="group" id="geometry">
       <div class="row head"><span></span><span>前</span><span>後</span></div>
       <div class="row"><span class="name">車高 <span class="unit">mm</span></span><input class="value" type="text" inputmode="decimal" value="5.0" aria-label="車高 前，單位 mm"><input class="value" type="text" inputmode="decimal" value="5.2" aria-label="車高 後，單位 mm"></div>
-      <div class="row"><span class="name">傾角 <span class="unit">°</span></span><input class="value" type="text" inputmode="decimal" value="2" aria-label="傾角 前，單位 度"><input class="value" type="text" inputmode="decimal" value="2" aria-label="傾角 後，單位 度"></div>
-      <div class="row"><span class="name">卡特 <span class="unit">°</span></span><input class="value" type="text" inputmode="decimal" value="4" aria-label="卡特 前，單位 度"><input class="value" type="text" inputmode="decimal" value="2" aria-label="卡特 後，單位 度"></div>
-      <div class="row"><span class="name">束角 <span class="unit">°</span></span><input class="value" type="text" inputmode="decimal" value="-1" aria-label="束角 前，單位 度"><input class="value" type="text" inputmode="decimal" value="2" aria-label="束角 後，單位 度"></div>
+      <div class="row"><span class="name">傾角 <span class="en-sub">Camber</span> <span class="unit">°</span></span><input class="value" type="text" inputmode="decimal" value="2" aria-label="傾角 Camber 前，單位 度"><input class="value" type="text" inputmode="decimal" value="2" aria-label="傾角 Camber 後，單位 度"></div>
+      <div class="row"><span class="name">後傾角 <span class="en-sub">Caster</span> <span class="unit">°</span></span><input class="value" type="text" inputmode="decimal" value="4" aria-label="後傾角 Caster 前，單位 度"><input class="value" type="text" inputmode="decimal" value="2" aria-label="後傾角 Caster 後，單位 度"></div>
+      <div class="row"><span class="name">束角 <span class="en-sub">Toe</span> <span class="unit">°</span></span><input class="value toe-input" type="text" inputmode="decimal" value="-1" aria-label="束角 Toe 前，單位 度"><input class="value toe-input" type="text" inputmode="decimal" value="2" aria-label="束角 Toe 後，單位 度"></div>
       <div class="row"><span class="name">上抬 <span class="unit">mm</span></span><input class="value" type="text" inputmode="decimal" value="22.6" aria-label="上抬 前，單位 mm"><input class="value" type="text" inputmode="decimal" value="21.8" aria-label="上抬 後，單位 mm"></div>
     </section>
 
@@ -137,8 +163,23 @@
       <div class="row"><span class="name">避震墊片</span><input class="value" type="text" inputmode="decimal" value="2" aria-label="避震墊片 前"><input class="value" type="text" inputmode="decimal" value="0" aria-label="避震墊片 後"></div>
     </section>
 
-    <div class="section-title"><h3>差速器</h3><small>K</small></div>
-    <section class="group single"><div class="row"><span class="name">前差速 <span class="unit">K</span></span><input class="value" type="text" inputmode="decimal" value="" placeholder="未設定" aria-label="前差速，單位 K"></div><div class="row"><span class="name">後差速 <span class="unit">K</span></span><input class="value" type="text" inputmode="decimal" value="7" aria-label="後差速，單位 K"></div></section>
+    <div class="section-title"><h3>差速器</h3><small>K / 直軸</small></div>
+    <section class="group single">
+      <div class="row">
+        <span class="name">前差速 <span class="unit">K</span></span>
+        <div class="diff-control">
+          <input class="value diff-input" id="diff-front" type="text" inputmode="decimal" value="" placeholder="油號(K)" aria-label="前差速，單位 K">
+          <button class="spool-btn" type="button" data-spool-target="diff-front">直軸</button>
+        </div>
+      </div>
+      <div class="row">
+        <span class="name">後差速 <span class="unit">K</span></span>
+        <div class="diff-control">
+          <input class="value diff-input" id="diff-rear" type="text" inputmode="decimal" value="7" placeholder="油號(K)" aria-label="後差速，單位 K">
+          <button class="spool-btn" type="button" data-spool-target="diff-rear">直軸</button>
+        </div>
+      </div>
+    </section>
 
     <div class="section-title"><h3>擺臂墊片</h3><small>內 / 外</small></div>
     <section class="group">
@@ -149,6 +190,17 @@
       <div class="row"><span class="name">後下擺墊片 <span class="unit">mm</span></span><input class="value" type="text" inputmode="decimal" value="1" aria-label="後下擺墊片 內，單位 mm"><input class="value" type="text" inputmode="decimal" value="1" aria-label="後下擺墊片 外，單位 mm"></div>
     </section>
   </main>
+
+  <!-- 束角鍵盤負號快捷工具列 -->
+  <div class="sign-bar" id="sign-bar" role="toolbar" aria-label="束角負號快捷鍵">
+    <span class="sign-bar-label" id="sign-bar-label">束角 Toe</span>
+    <div class="sign-bar-actions">
+      <button class="sign-key" id="toggle-minus" type="button" aria-label="切換負號">－ / ＋</button>
+      <button class="sign-key secondary" id="clear-toe" type="button">清除</button>
+      <button class="sign-key primary" id="next-toe" type="button">下一項</button>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite">設定已儲存</div>
   <div class="bottom"><button class="save" id="save" type="button">儲存設定</button></div>
   <dialog id="compare-dialog">
@@ -226,6 +278,8 @@
     const trackInput = document.querySelector('#setup-track');
     const dateInput = document.querySelector('#setup-date');
     const noteInput = document.querySelector('#setup-note');
+    const trackChips = [...document.querySelectorAll('.track-chip')];
+    const spoolButtons = [...document.querySelectorAll('.spool-btn')];
 
     const activeChassis = () => appData.chassis.find(chassis => chassis.id === activeChassisId);
     const setups = () => activeChassis().setups;
@@ -235,6 +289,55 @@
     const formatDate = date => new Intl.DateTimeFormat('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
     const showToast = message => { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
 
+    // 同步場地快速選單高亮狀態
+    const syncTrackChips = () => {
+      const current = trackInput.value.trim();
+      trackChips.forEach(chip => chip.classList.toggle('active', chip.dataset.track === current));
+    };
+
+    trackChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const name = chip.dataset.track;
+        trackInput.value = trackInput.value.trim() === name ? '' : name;
+        syncTrackChips();
+        status.textContent = '未儲存變更';
+      });
+    });
+    trackInput.addEventListener('input', syncTrackChips);
+
+    // 同步差速器「直軸」按鈕狀態
+    const syncSpoolButtons = () => {
+      spoolButtons.forEach(btn => {
+        const target = document.getElementById(btn.dataset.spoolTarget);
+        const isSpool = target && target.value.trim() === '直軸';
+        btn.classList.toggle('active', isSpool);
+      });
+    };
+
+    spoolButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.spoolTarget);
+        if (!target) return;
+        if (target.value.trim() === '直軸') {
+          target.value = '';
+          target.focus();
+        } else {
+          target.value = '直軸';
+        }
+        syncSpoolButtons();
+        status.textContent = '未儲存變更';
+      });
+    });
+
+    document.querySelectorAll('.diff-input').forEach(diffEl => {
+      diffEl.addEventListener('focus', () => {
+        if (diffEl.value.trim() === '直軸') {
+          diffEl.select();
+        }
+      });
+      diffEl.addEventListener('input', syncSpoolButtons);
+    });
+
     const loadVersion = id => {
       const version = setups().find(item => item.id === id); if (!version) return;
       activeId = id; version.values.forEach((value, i) => inputs[i].value = value);
@@ -242,6 +345,8 @@
       trackInput.value = version.track || '';
       dateInput.value = version.setupDate || '';
       noteInput.value = version.note || '';
+      syncTrackChips();
+      syncSpoolButtons();
       document.querySelector('#created-at').textContent = `建立：${formatDate(version.createdAt)}`;
       document.querySelector('#updated-at').textContent = `最後儲存：${formatDate(version.updatedAt)}`;
       status.textContent = '已載入'; renderHistory();
@@ -331,6 +436,76 @@
           }
         }
       });
+    });
+
+    // 束角 Toe 鍵盤負號快捷工具列控制
+    const signBar = document.querySelector('#sign-bar');
+    const signBarLabel = document.querySelector('#sign-bar-label');
+    let activeToeInput = null;
+
+    const updateSignBarPosition = () => {
+      if (!signBar.classList.contains('show')) return;
+      if (window.visualViewport) {
+        const vv = window.visualViewport;
+        const bottomOffset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+        signBar.style.bottom = `${bottomOffset}px`;
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateSignBarPosition);
+      window.visualViewport.addEventListener('scroll', updateSignBarPosition);
+    }
+
+    document.querySelectorAll('.toe-input').forEach(toeEl => {
+      toeEl.addEventListener('focus', () => {
+        activeToeInput = toeEl;
+        signBarLabel.textContent = toeEl.getAttribute('aria-label').split('，')[0];
+        signBar.classList.add('show');
+        updateSignBarPosition();
+      });
+      toeEl.addEventListener('blur', () => {
+        setTimeout(() => {
+          if (!document.activeElement || !document.activeElement.classList.contains('toe-input')) {
+            signBar.classList.remove('show');
+            signBar.style.bottom = '0px';
+            activeToeInput = null;
+          }
+        }, 120);
+      });
+    });
+
+    // 點擊負號快捷鍵時避免搶走輸入框焦點
+    signBar.addEventListener('mousedown', e => e.preventDefault());
+    signBar.addEventListener('touchstart', e => {
+      if (e.target.closest('button')) e.preventDefault();
+    }, { passive: false });
+
+    document.querySelector('#toggle-minus').addEventListener('click', () => {
+      if (!activeToeInput) return;
+      const raw = activeToeInput.value.trim();
+      if (raw === '') {
+        activeToeInput.value = '-';
+      } else if (raw === '-') {
+        activeToeInput.value = '';
+      } else if (raw.startsWith('-')) {
+        activeToeInput.value = raw.slice(1);
+      } else {
+        activeToeInput.value = `-${raw}`;
+      }
+      status.textContent = '未儲存變更';
+    });
+
+    document.querySelector('#clear-toe').addEventListener('click', () => {
+      if (!activeToeInput) return;
+      activeToeInput.value = '';
+      status.textContent = '未儲存變更';
+    });
+
+    document.querySelector('#next-toe').addEventListener('click', () => {
+      if (!activeToeInput) return;
+      const idx = inputs.indexOf(activeToeInput);
+      if (inputs[idx + 1]) inputs[idx + 1].focus();
     });
 
     // 數值輸入框鍵盤快速鍵與操作優化
@@ -443,17 +618,4 @@
     document.querySelector('[data-chassis-close]').addEventListener('click', () => chassisDialog.close());
     const addChassisAction = () => {
       const nameInput = document.querySelector('#new-chassis-name');
-      const name = nameInput.value.trim() || `車架 ${appData.chassis.length + 1}`;
-      const createdAt = new Date().toISOString();
-      const setup = { id:crypto.randomUUID(), track:'', setupDate:todayStr(), note:'Setup 01', createdAt, updatedAt:createdAt, values:[...baseline] };
-      const chassis = { id:crypto.randomUUID(), name, createdAt, setups:[setup] };
-      appData.chassis.unshift(chassis); activeChassisId = chassis.id; activeId = setup.id; nameInput.value = '';
-      saveHistory(); loadVersion(activeId); chassisDialog.close(); showToast('已建立新車架');
-    };
-    document.querySelector('#add-chassis').addEventListener('click', addChassisAction);
-    document.querySelector('#new-chassis-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addChassisAction(); } });
-
-    loadVersion(activeId);
-  </script>
-</body>
-</html>
+      const name = nameInput.
