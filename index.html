@@ -618,4 +618,17 @@
     document.querySelector('[data-chassis-close]').addEventListener('click', () => chassisDialog.close());
     const addChassisAction = () => {
       const nameInput = document.querySelector('#new-chassis-name');
-      const name = nameInput.
+      const name = nameInput.value.trim() || `車架 ${appData.chassis.length + 1}`;
+      const createdAt = new Date().toISOString();
+      const setup = { id:crypto.randomUUID(), track:'', setupDate:todayStr(), note:'Setup 01', createdAt, updatedAt:createdAt, values:[...baseline] };
+      const chassis = { id:crypto.randomUUID(), name, createdAt, setups:[setup] };
+      appData.chassis.unshift(chassis); activeChassisId = chassis.id; activeId = setup.id; nameInput.value = '';
+      saveHistory(); loadVersion(activeId); chassisDialog.close(); showToast('已建立新車架');
+    };
+    document.querySelector('#add-chassis').addEventListener('click', addChassisAction);
+    document.querySelector('#new-chassis-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addChassisAction(); } });
+
+    loadVersion(activeId);
+  </script>
+</body>
+</html>
