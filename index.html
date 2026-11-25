@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RC Setup Book</title>
+  <style>
+    :root { --blue:#0a84ff; --ink:#111318; --muted:#6e7180; --line:#e7e7ec; --wash:#f4f4f8; --card:#fff; --green:#32a85a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#dedfe5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC",sans-serif; letter-spacing:-.01em; }
+    button, input { font:inherit; }
+    .phone { min-height:100vh; max-width:430px; margin:auto; background:var(--wash); padding:env(safe-area-inset-top, 20px) 16px calc(88px + env(safe-area-inset-bottom)); }
+    header { display:flex; justify-content:space-between; align-items:center; padding:14px 4px 20px; }
+    h1 { margin:0; font-size:34px; letter-spacing:-1.3px; }
+    .more { border:0; background:transparent; color:var(--blue); font-size:17px; padding:8px 3px; }
+    .model-card { background:linear-gradient(135deg,#18202d,#323e51); color:#fff; border-radius:24px; padding:21px; box-shadow:0 10px 24px #1c223122; }
+    .eyebrow { margin:0 0 6px; color:#bfc8d9; font-size:13px; font-weight:600; }
+    .model-card h2 { margin:0; font-size:25px; }
+    .setup-name { width:170px; max-width:62vw; border:0; border-bottom:1px solid #ffffff70; border-radius:0; background:transparent; color:#fff; padding:1px 0 3px; font:inherit; font-weight:650; outline:none; }
+    .setup-name:focus { border-bottom-color:#fff; }
+    .model-meta { display:flex; justify-content:space-between; align-items:flex-end; margin-top:25px; }
+    .model-meta span { font-size:13px; color:#d4dbe6; }
+    .saved { color:#96e6b1 !important; font-weight:600; }
+    .setup-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .setup-action { border:0; border-radius:12px; background:#ffffff20; color:#fff; padding:12px 8px; font-size:14px; font-weight:600; }
+    .section-title { display:flex; align-items:center; justify-content:space-between; margin:28px 4px 10px; }
+    .section-title h3 { margin:0; font-size:20px; letter-spacing:-.45px; }
+    .section-title small { color:var(--muted); font-size:13px; }
+    .group { overflow:hidden; background:var(--card); border-radius:16px; box-shadow:0 1px 1px #11111108; }
+    .row { display:grid; grid-template-columns:1fr 92px 92px; align-items:center; min-height:57px; margin-left:16px; border-bottom:1px solid var(--line); }
+    .row:last-child { border-bottom:0; }
+    .name { font-size:16px; font-weight:520; }
+    .unit { margin-left:5px; color:var(--muted); font-size:12px; font-weight:400; }
+    .value { border:0; width:100%; background:transparent; padding:8px 4px; text-align:center; color:var(--blue); font-size:16px; font-weight:600; outline:none; }
+    .value:focus { background:#eaf4ff; border-radius:8px; }
+    .head { min-height:34px; border:0; color:var(--muted); font-size:12px; font-weight:500; }
+    .single .row { grid-template-columns:1fr 184px; }
+    .add { width:100%; border:0; background:transparent; color:var(--blue); padding:17px; font-size:16px; font-weight:600; }
+    .bottom { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:min(430px,100%); padding:11px 16px calc(11px + env(safe-area-inset-bottom)); background:#f4f4f8eF; backdrop-filter:blur(12px); border-top:1px solid #e6e6eb; }
+    .save { width:100%; border:0; border-radius:15px; padding:16px; background:var(--blue); color:#fff; font-size:17px; font-weight:650; box-shadow:0 4px 10px #0a84ff35; }
+    .history { margin-top:10px; }
+    .history-item { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; border:0; border-bottom:1px solid var(--line); background:transparent; padding:14px 16px; text-align:left; color:var(--ink); }
+    .history-item:last-child { border-bottom:0; }
+    .history-item.active { background:#edf6ff; }
+    .history-name { display:block; font-size:15px; font-weight:600; }
+    .history-date { display:block; margin-top:3px; color:var(--muted); font-size:12px; }
+    .history-arrow { color:var(--blue); font-size:18px; }
+    dialog { width:min(430px, calc(100% - 24px)); max-height:80vh; padding:0; border:0; border-radius:22px; background:var(--wash); color:var(--ink); box-shadow:0 18px 48px #11182755; }
+    dialog::backdrop { background:#11182775; }
+    .dialog-head { display:flex; align-items:center; justify-content:space-between; padding:18px 18px 12px; background:var(--card); }
+    .dialog-head h2 { margin:0; font-size:20px; }
+    .close { border:0; background:transparent; color:var(--blue); padding:7px; font-size:15px; }
+    .compare-choice { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:12px 16px; }
+    .compare-choice label { display:flex; flex-direction:column; gap:5px; color:var(--muted); font-size:12px; }
+    select { width:100%; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); padding:9px; font-size:14px; }
+    .comparison { margin:0 16px 16px; overflow:hidden; background:var(--card); border-radius:14px; }
+    .comparison-row { display:grid; grid-template-columns:1.2fr .8fr .8fr; padding:11px 12px; border-bottom:1px solid var(--line); font-size:13px; }
+    .comparison-row:last-child { border-bottom:0; }
+    .comparison-row.changed { background:#fff8e5; }
+    .comparison-row span:not(:first-child) { text-align:center; color:var(--blue); font-weight:600; }
+    .comparison-row.heading { color:var(--muted); font-size:12px; }
+    .comparison-row.heading span { color:var(--muted); font-weight:500; }
+    .toast { position:fixed; z-index:2; left:50%; transform:translate(-50%,20px); bottom:86px; opacity:0; transition:.25s; background:#202126; color:#fff; padding:10px 15px; border-radius:22px; font-size:14px; pointer-events:none; }
+    .toast.show { transform:translate(-50%,0); opacity:1; }
+    @media (min-width:431px) { .phone { min-height:844px; margin-top:12px; margin-bottom:12px; border-radius:34px; box-shadow:0 18px 55px #29304338; } }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <header><h1>我的設定</h1><button class="more" type="button" aria-label="更多選項">•••</button></header>
+    <section class="model-card" aria-label="目前的 RC 模型設定">
+      <p class="eyebrow">目前設定</p><h2>RC Touring · <input class="setup-name" id="setup-title" value="Setup 01" aria-label="設定名稱"></h2>
+      <div class="model-meta"><span id="created-at">建立：—</span><span class="saved" id="status">已儲存</span></div>
+      <div class="model-meta"><span id="updated-at">最後儲存：—</span><span></span></div>
+      <div class="setup-actions"><button class="setup-action" id="new-version" type="button">另存新版本</button><button class="setup-action" id="compare" type="button">比較設定</button></div>
+    </section>
+
+    <div class="section-title"><h3>已儲存版本</h3><small id="history-count">1 個版本</small></div>
+    <section class="group history" id="history" aria-label="已儲存版本"></section>
+
+    <div class="section-title"><h3>底盤幾何</h3><small>前 / 後</small></div>
+    <section class="group" id="geometry">
+      <div class="row head"><span></span><span>前</span><span>後</span></div>
+      <div class="row"><span class="name">車高 <span class="unit">mm</span></span><input class="value" value="5.0" aria-label="車高 前，單位 mm"><input class="value" value="5.2" aria-label="車高 後，單位 mm"></div>
+      <div class="row"><span class="name">傾角 <span class="unit">°</span></span><input class="value" value="2" aria-label="傾角 前，單位 度"><input class="value" value="2" aria-label="傾角 後，單位 度"></div>
+      <div class="row"><span class="name">卡特 <span class="unit">°</span></span><input class="value" value="4" aria-label="卡特 前，單位 度"><input class="value" value="2" aria-label="卡特 後，單位 度"></div>
+      <div class="row"><span class="name">束角 <span class="unit">°</span></span><input class="value" value="-1" aria-label="束角 前，單位 度"><input class="value" value="2" aria-label="束角 後，單位 度"></div>
+      <div class="row"><span class="name">上抬 <span class="unit">mm</span></span><input class="value" value="22.6" aria-label="上抬 前，單位 mm"><input class="value" value="21.8" aria-label="上抬 後，單位 mm"></div>
+    </section>
+
+    <div class="section-title"><h3>懸吊與避震</h3><small>前 / 後</small></div>
+    <section class="group">
+      <div class="row head"><span></span><span>前</span><span>後</span></div>
+      <div class="row"><span class="name">彈簧</span><input class="value" value="2.8" aria-label="彈簧 前"><input class="value" value="2.8" aria-label="彈簧 後"></div>
+      <div class="row"><span class="name">避震墊片</span><input class="value" value="2" aria-label="避震墊片 前"><input class="value" value="0" aria-label="避震墊片 後"></div>
+    </section>
+
+    <div class="section-title"><h3>差速器</h3></div>
+    <section class="group single"><div class="row"><span class="name">後差速</span><input class="value" value="7k" aria-label="後差速"></div></section>
+
+    <div class="section-title"><h3>擺臂墊片</h3><small>內 / 外</small></div>
+    <section class="group">
+      <div class="row head"><span></span><span>內</span><span>外</span></div>
+      <div class="row"><span class="name">前上擺墊片</span><input class="value" value="1" aria-label="前上擺墊片 內"><input class="value" value="2" aria-label="前上擺墊片 外"></div>
+      <div class="row"><span class="name">前下擺墊片</span><input class="value" value="1" aria-label="前下擺墊片 內"><input class="value" value="1" aria-label="前下擺墊片 外"></div>
+      <div class="row"><span class="name">後上擺墊片</span><input class="value" value="1" aria-label="後上擺墊片 內"><input class="value" value="2" aria-label="後上擺墊片 外"></div>
+      <div class="row"><span class="name">後下擺墊片</span><input class="value" value="1" aria-label="後下擺墊片 內"><input class="value" value="1" aria-label="後下擺墊片 外"></div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite">設定已儲存</div>
+  <div class="bottom"><button class="save" id="save" type="button">儲存設定</button></div>
+  <dialog id="compare-dialog">
+    <div class="dialog-head"><h2>比較設定</h2><button class="close" type="button" data-close>完成</button></div>
+    <div class="compare-choice">
+      <label>設定 A<select id="compare-a"></select></label>
+      <label>設定 B<select id="compare-b"></select></label>
+    </div>
+    <div class="comparison" id="comparison" aria-live="polite"></div>
+  </dialog>
+  <script>
+    const inputs = [...document.querySelectorAll('.value')];
+    const storeKey = 'rc-setup-history-v2';
+    const labels = inputs.map(input => input.getAttribute('aria-label').split('，')[0]);
+    const baseline = inputs.map(input => input.value);
+    const legacy = localStorage.getItem('rc-setup-01');
+    const now = new Date().toISOString();
+    let versions = JSON.parse(localStorage.getItem(storeKey) || 'null') || [{ id: crypto.randomUUID(), name:'Setup 01', createdAt:now, updatedAt:now, values: legacy ? JSON.parse(legacy) : baseline }];
+    versions = versions.map(version => ({ ...version, createdAt:version.createdAt || version.date || now, updatedAt:version.updatedAt || version.date || now }));
+    let activeId = versions[0].id;
+    const toast = document.querySelector('#toast'), status = document.querySelector('#status');
+    const saveHistory = () => localStorage.setItem(storeKey, JSON.stringify(versions));
+    const activeVersion = () => versions.find(version => version.id === activeId);
+    const readValues = () => inputs.map(input => input.value.trim());
+    const formatDate = date => new Intl.DateTimeFormat('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
+    const loadVersion = id => {
+      const version = versions.find(item => item.id === id); if (!version) return;
+      activeId = id; version.values.forEach((value, i) => inputs[i].value = value);
+      document.querySelector('#setup-title').value = version.name;
+      document.querySelector('#created-at').textContent = `建立：${formatDate(version.createdAt)}`;
+      document.querySelector('#updated-at').textContent = `最後儲存：${formatDate(version.updatedAt)}`;
+      status.textContent = '已載入'; renderHistory();
+    };
+    const renderHistory = () => {
+      const history = document.querySelector('#history');
+      history.innerHTML = versions.map(version => `<button class="history-item ${version.id === activeId ? 'active' : ''}" type="button" data-id="${version.id}"><span><span class="history-name">${version.name}</span><span class="history-date">最後儲存：${formatDate(version.updatedAt)}${version.id === activeId ? ' · 目前編輯中' : ''}</span></span><span class="history-arrow">›</span></button>`).join('');
+      document.querySelector('#history-count').textContent = `${versions.length} 個版本`;
+      history.querySelectorAll('[data-id]').forEach(button => button.addEventListener('click', () => loadVersion(button.dataset.id)));
+    };
+    const showToast = message => { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
+    document.querySelector('#save').addEventListener('click', () => {
+      const version = activeVersion(); version.name = document.querySelector('#setup-title').value.trim() || '未命名設定'; version.values = readValues(); version.updatedAt = new Date().toISOString(); saveHistory();
+      status.textContent = '剛剛儲存'; renderHistory(); showToast('設定已更新');
+    });
+    document.querySelector('#new-version').addEventListener('click', () => {
+      const createdAt = new Date().toISOString();
+      const version = { id:crypto.randomUUID(), name:`Setup ${String(versions.length + 1).padStart(2,'0')}`, createdAt, updatedAt:createdAt, values:readValues() };
+      versions.unshift(version); activeId = version.id; saveHistory(); loadVersion(version.id);
+      status.textContent = '新版本'; showToast('已建立新版本');
+    });
+    const dialog = document.querySelector('#compare-dialog'), selectA = document.querySelector('#compare-a'), selectB = document.querySelector('#compare-b');
+    const renderComparison = () => {
+      const a = versions.find(version => version.id === selectA.value), b = versions.find(version => version.id === selectB.value); if (!a || !b) return;
+      document.querySelector('#comparison').innerHTML = `<div class="comparison-row heading"><span>參數</span><span>${a.name}</span><span>${b.name}</span></div>` + labels.map((label, index) => `<div class="comparison-row ${a.values[index] !== b.values[index] ? 'changed' : ''}"><span>${label}</span><span>${a.values[index]}</span><span>${b.values[index]}</span></div>`).join('');
+    };
+    document.querySelector('#compare').addEventListener('click', () => {
+      const options = versions.map(version => `<option value="${version.id}">${version.name} · ${formatDate(version.updatedAt)}</option>`).join('');
+      selectA.innerHTML = options; selectB.innerHTML = options; selectA.value = activeId;
+      selectB.value = versions.find(version => version.id !== activeId)?.id || activeId; renderComparison(); dialog.showModal();
+    });
+    selectA.addEventListener('change', renderComparison); selectB.addEventListener('change', renderComparison);
+    document.querySelector('[data-close]').addEventListener('click', () => dialog.close());
+    loadVersion(activeId);
+  </script>
+</body>
+</html>
