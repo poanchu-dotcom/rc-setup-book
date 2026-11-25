@@ -8,11 +8,11 @@
     :root { --blue:#0a84ff; --ink:#111318; --muted:#6e7180; --line:#e7e7ec; --wash:#f4f4f8; --card:#fff; --green:#32a85a; --amber-bg:#ffefc2; --amber-accent:#d97706; --amber-ink:#92400e; }
     * { box-sizing:border-box; }
     body { margin:0; background:#dedfe5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC",sans-serif; letter-spacing:-.01em; }
-    button, input { font:inherit; }
+    button, input, select { font:inherit; touch-action:manipulation; }
     .phone { min-height:100vh; max-width:430px; margin:auto; background:var(--wash); padding:env(safe-area-inset-top, 20px) 16px calc(88px + env(safe-area-inset-bottom)); }
     header { display:flex; justify-content:space-between; align-items:center; padding:14px 4px 20px; }
     h1 { margin:0; font-size:34px; letter-spacing:-1.3px; }
-    .more { border:0; background:transparent; color:var(--blue); font-size:17px; padding:8px 3px; cursor:pointer; }
+    .more { border:0; background:transparent; color:var(--blue); font-size:17px; font-weight:600; padding:8px 6px; cursor:pointer; }
     .model-card { background:linear-gradient(135deg,#18202d,#323e51); color:#fff; border-radius:24px; padding:21px; box-shadow:0 10px 24px #1c223122; }
     .eyebrow { margin:0 0 12px; color:#bfc8d9; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:space-between; }
     .eyebrow strong { color:#fff; font-weight:700; }
@@ -24,15 +24,15 @@
     .meta-input::placeholder { color:#ffffff60; font-weight:400; }
     .meta-input:focus { border-bottom-color:#fff; }
     .track-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
-    .track-chip { border:1px solid #ffffff30; border-radius:99px; background:#ffffff14; color:#e5ecf7; padding:3px 10px; font-size:12px; font-weight:600; cursor:pointer; transition:.15s; }
+    .track-chip { border:1px solid #ffffff35; border-radius:99px; background:#ffffff18; color:#eef3fb; padding:5px 12px; font-size:13px; font-weight:600; cursor:pointer; transition:.15s; user-select:none; }
     .track-chip:active { transform:scale(.96); }
     .track-chip.active { background:#fff; color:#18202d; border-color:#fff; }
     .model-meta { display:flex; justify-content:space-between; align-items:flex-end; margin-top:18px; }
     .model-meta span { font-size:13px; color:#d4dbe6; }
     .saved { color:#96e6b1 !important; font-weight:600; }
     .setup-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
-    .setup-action { border:0; border-radius:12px; background:#ffffff20; color:#fff; padding:12px 8px; font-size:14px; font-weight:600; cursor:pointer; }
-    .setup-action:active { background:#ffffff35; }
+    .setup-action { border:0; border-radius:12px; background:#ffffff22; color:#fff; padding:12px 8px; font-size:14px; font-weight:600; cursor:pointer; }
+    .setup-action:active { background:#ffffff38; }
     .section-title { display:flex; align-items:center; justify-content:space-between; margin:28px 4px 10px; }
     .section-title h3 { margin:0; font-size:20px; letter-spacing:-.45px; }
     .section-title small { color:var(--muted); font-size:13px; }
@@ -48,13 +48,11 @@
     .single .row { grid-template-columns:1fr 184px; }
     .diff-control { display:flex; align-items:center; gap:6px; padding-right:8px; }
     .diff-control .value { flex:1; min-width:0; }
-    .spool-btn { border:1px solid #d5d8e2; border-radius:8px; background:#f6f7fa; color:var(--muted); padding:6px 10px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.15s; }
+    .spool-btn { border:1px solid #d5d8e2; border-radius:8px; background:#f6f7fa; color:var(--muted); padding:7px 11px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:.15s; user-select:none; }
     .spool-btn.active { background:var(--blue); border-color:var(--blue); color:#fff; }
-    .add { width:100%; border:0; background:transparent; color:var(--blue); padding:17px; font-size:16px; font-weight:600; }
     .bottom { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:min(430px,100%); padding:11px 16px calc(11px + env(safe-area-inset-bottom)); background:#f4f4f8eF; backdrop-filter:blur(12px); border-top:1px solid #e6e6eb; }
     .save { width:100%; border:0; border-radius:15px; padding:16px; background:var(--blue); color:#fff; font-size:17px; font-weight:650; box-shadow:0 4px 10px #0a84ff35; cursor:pointer; }
     .save:active { opacity:.9; }
-    /* 束角專用鍵盤負號快捷列 */
     .sign-bar { position:fixed; z-index:10; left:50%; transform:translateX(-50%); bottom:0; width:min(430px,100%); display:none; align-items:center; justify-content:space-between; gap:8px; padding:8px 12px; background:#d1d5db; border-top:1px solid #b8bec7; box-shadow:0 -4px 14px #00000018; }
     .sign-bar.show { display:flex; }
     .sign-bar-label { font-size:12px; color:#374151; font-weight:600; padding-left:4px; }
@@ -106,7 +104,7 @@
     .comparison-row.heading { color:var(--muted); font-size:12px; background:#fafafa; }
     .comparison-row.heading span { color:var(--muted); font-weight:600; }
     .comparison-empty { padding:24px 16px; text-align:center; color:var(--muted); font-size:14px; }
-    .toast { position:fixed; z-index:2; left:50%; transform:translate(-50%,20px); bottom:86px; opacity:0; transition:.25s; background:#202126; color:#fff; padding:10px 15px; border-radius:22px; font-size:14px; pointer-events:none; }
+    .toast { position:fixed; z-index:20; left:50%; transform:translate(-50%,20px); bottom:86px; opacity:0; transition:.25s; background:#202126; color:#fff; padding:10px 15px; border-radius:22px; font-size:14px; pointer-events:none; }
     .toast.show { transform:translate(-50%,0); opacity:1; }
     @media (min-width:431px) { .phone { min-height:844px; margin-top:12px; margin-bottom:12px; border-radius:34px; box-shadow:0 18px 55px #29304338; } }
   </style>
@@ -191,7 +189,6 @@
     </section>
   </main>
 
-  <!-- 束角鍵盤負號快捷工具列 -->
   <div class="sign-bar" id="sign-bar" role="toolbar" aria-label="束角負號快捷鍵">
     <span class="sign-bar-label" id="sign-bar-label">束角 Toe</span>
     <div class="sign-bar-actions">
@@ -221,6 +218,10 @@
     <div class="new-chassis"><input id="new-chassis-name" placeholder="新車架名稱" aria-label="新車架名稱"><button class="btn-primary" id="add-chassis" type="button">新增</button></div>
   </dialog>
   <script>
+    const uid = () => (window.crypto && typeof window.crypto.randomUUID === 'function')
+      ? window.crypto.randomUUID()
+      : `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+
     const inputs = [...document.querySelectorAll('.value')];
     const storeKey = 'rc-setup-book-v3';
     const legacyStoreKey = 'rc-setup-history-v2';
@@ -231,22 +232,36 @@
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     };
-    const oldVersions = JSON.parse(localStorage.getItem(legacyStoreKey) || 'null');
-    const oldValues = JSON.parse(localStorage.getItem('rc-setup-01') || 'null');
-    const migrateValues = values => values && values.length === inputs.length - 1 ? [...values.slice(0, 14), '', values[14], ...values.slice(15)] : (values || baseline);
+
+    const safeParse = (key, fallback) => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+
+    const oldVersions = safeParse(legacyStoreKey, null);
+    const oldValues = safeParse('rc-setup-01', null);
+    const migrateValues = values => Array.isArray(values)
+      ? (values.length === inputs.length - 1 ? [...values.slice(0, 14), '', values[14], ...values.slice(15)] : values)
+      : [...baseline];
 
     const normalizeSetup = setup => {
-      const created = setup.createdAt || setup.date || now;
-      const updated = setup.updatedAt || setup.date || now;
-      const hasNewFields = typeof setup.track === 'string' || typeof setup.setupDate === 'string' || typeof setup.note === 'string';
+      const s = setup && typeof setup === 'object' ? setup : {};
+      const created = typeof s.createdAt === 'string' ? s.createdAt : (typeof s.date === 'string' ? s.date : now);
+      const updated = typeof s.updatedAt === 'string' ? s.updatedAt : (typeof s.date === 'string' ? s.date : now);
+      const hasNewFields = typeof s.track === 'string' || typeof s.setupDate === 'string' || typeof s.note === 'string';
       return {
-        ...setup,
-        track: hasNewFields ? (setup.track || '') : '',
-        setupDate: hasNewFields ? (setup.setupDate || '') : (created.slice(0, 10) || todayStr()),
-        note: hasNewFields ? (setup.note || '') : (setup.name || 'Setup 01'),
+        ...s,
+        id: s.id || uid(),
+        track: hasNewFields ? (s.track || '') : '',
+        setupDate: hasNewFields ? (s.setupDate || '') : (created.slice(0, 10) || todayStr()),
+        note: hasNewFields ? (s.note || '') : (s.name || 'Setup 01'),
         createdAt: created,
         updatedAt: updated,
-        values: migrateValues(setup.values)
+        values: migrateValues(s.values)
       };
     };
 
@@ -259,37 +274,83 @@
     const getSetupPrimary = v => [v.track, v.setupDate].filter(Boolean).join(' · ') || v.note || v.name || '未命名設定';
     const getSetupSecondary = v => ([v.track, v.setupDate].some(Boolean) && v.note) ? v.note : '';
 
-    let appData = JSON.parse(localStorage.getItem(storeKey) || 'null') || {
-      activeChassisId: crypto.randomUUID(), activeSetupId: null, chassis: []
-    };
-    if (!appData.chassis.length) {
-      const setups = (oldVersions || [{ id:crypto.randomUUID(), track:'', setupDate:todayStr(), note:'Setup 01', createdAt:now, updatedAt:now, values:oldValues || baseline }]).map(version => normalizeSetup({
-        ...version,
-        id: version.id || crypto.randomUUID()
-      }));
-      appData.chassis = [{ id:appData.activeChassisId, name:'RC Touring', createdAt:now, setups }];
-      appData.activeSetupId = setups[0].id;
+    let appData = safeParse(storeKey, null);
+    if (!appData || !Array.isArray(appData.chassis) || !appData.chassis.length) {
+      const initialChassisId = uid();
+      const rawSetups = Array.isArray(oldVersions) && oldVersions.length
+        ? oldVersions
+        : [{ id: uid(), track: '', setupDate: todayStr(), note: 'Setup 01', createdAt: now, updatedAt: now, values: oldValues || baseline }];
+      const setupsList = rawSetups.map(normalizeSetup);
+      appData = {
+        activeChassisId: initialChassisId,
+        activeSetupId: setupsList[0].id,
+        chassis: [{ id: initialChassisId, name: 'RC Touring', createdAt: now, setups: setupsList }]
+      };
+    } else {
+      appData.chassis.forEach(chassis => {
+        chassis.id = chassis.id || uid();
+        chassis.name = chassis.name || '未命名車架';
+        chassis.setups = Array.isArray(chassis.setups) && chassis.setups.length
+          ? chassis.setups.map(normalizeSetup)
+          : [normalizeSetup({ note: 'Setup 01' })];
+      });
     }
-    appData.chassis.forEach(chassis => chassis.setups = chassis.setups.map(normalizeSetup));
 
-    let activeChassisId = appData.activeChassisId || appData.chassis[0].id;
-    let activeId = appData.activeSetupId || appData.chassis[0].setups[0].id;
-    const toast = document.querySelector('#toast'), status = document.querySelector('#status');
+    let activeChassisId = appData.chassis.some(c => c.id === appData.activeChassisId) ? appData.activeChassisId : appData.chassis[0].id;
+    let activeId = appData.activeSetupId;
+
+    const toast = document.querySelector('#toast');
+    const status = document.querySelector('#status');
     const trackInput = document.querySelector('#setup-track');
     const dateInput = document.querySelector('#setup-date');
     const noteInput = document.querySelector('#setup-note');
     const trackChips = [...document.querySelectorAll('.track-chip')];
     const spoolButtons = [...document.querySelectorAll('.spool-btn')];
 
-    const activeChassis = () => appData.chassis.find(chassis => chassis.id === activeChassisId);
+    const activeChassis = () => appData.chassis.find(c => c.id === activeChassisId) || appData.chassis[0];
     const setups = () => activeChassis().setups;
-    const activeVersion = () => setups().find(version => version.id === activeId);
-    const saveHistory = () => { appData.activeChassisId = activeChassisId; appData.activeSetupId = activeId; localStorage.setItem(storeKey, JSON.stringify(appData)); };
-    const readValues = () => inputs.map(input => input.value.trim());
-    const formatDate = date => new Intl.DateTimeFormat('zh-TW',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(date));
-    const showToast = message => { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2200); };
+    const activeVersion = () => setups().find(v => v.id === activeId) || setups()[0];
+    if (!setups().some(v => v.id === activeId)) activeId = setups()[0].id;
 
-    // 同步場地快速選單高亮狀態
+    const saveHistory = () => {
+      try {
+        appData.activeChassisId = activeChassis().id;
+        appData.activeSetupId = activeVersion().id;
+        localStorage.setItem(storeKey, JSON.stringify(appData));
+      } catch (err) {
+        console.warn('儲存失敗:', err);
+      }
+    };
+
+    const readValues = () => inputs.map(input => input.value.trim());
+    const formatDate = date => {
+      const d = new Date(date);
+      if (Number.isNaN(d.getTime())) return '—';
+      return new Intl.DateTimeFormat('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(d);
+    };
+    const showToast = message => {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    };
+
+    const openDialog = dlg => {
+      if (typeof dlg.showModal === 'function') {
+        dlg.showModal();
+      } else {
+        dlg.setAttribute('open', '');
+      }
+    };
+
+    const closeDialog = dlg => {
+      if (typeof dlg.close === 'function') {
+        dlg.close();
+      } else {
+        dlg.removeAttribute('open');
+      }
+    };
+
+    // 場地快速選單同步
     const syncTrackChips = () => {
       const current = trackInput.value.trim();
       trackChips.forEach(chip => chip.classList.toggle('active', chip.dataset.track === current));
@@ -305,7 +366,7 @@
     });
     trackInput.addEventListener('input', syncTrackChips);
 
-    // 同步差速器「直軸」按鈕狀態
+    // 差速器「直軸」按鈕同步
     const syncSpoolButtons = () => {
       spoolButtons.forEach(btn => {
         const target = document.getElementById(btn.dataset.spoolTarget);
@@ -331,16 +392,16 @@
 
     document.querySelectorAll('.diff-input').forEach(diffEl => {
       diffEl.addEventListener('focus', () => {
-        if (diffEl.value.trim() === '直軸') {
-          diffEl.select();
-        }
+        if (diffEl.value.trim() === '直軸') diffEl.select();
       });
       diffEl.addEventListener('input', syncSpoolButtons);
     });
 
     const loadVersion = id => {
-      const version = setups().find(item => item.id === id); if (!version) return;
-      activeId = id; version.values.forEach((value, i) => inputs[i].value = value);
+      const version = setups().find(item => item.id === id) || setups()[0];
+      if (!version) return;
+      activeId = version.id;
+      version.values.forEach((value, i) => { if (inputs[i]) inputs[i].value = value; });
       document.querySelector('#chassis-display').textContent = activeChassis().name;
       trackInput.value = version.track || '';
       dateInput.value = version.setupDate || '';
@@ -349,7 +410,8 @@
       syncSpoolButtons();
       document.querySelector('#created-at').textContent = `建立：${formatDate(version.createdAt)}`;
       document.querySelector('#updated-at').textContent = `最後儲存：${formatDate(version.updatedAt)}`;
-      status.textContent = '已載入'; renderHistory();
+      status.textContent = '已載入';
+      renderHistory();
     };
 
     const deleteVersion = id => {
@@ -411,16 +473,20 @@
     document.querySelector('#new-version').addEventListener('click', () => {
       const createdAt = new Date().toISOString();
       const version = {
-        id: crypto.randomUUID(),
+        id: uid(),
         track: trackInput.value.trim(),
         setupDate: todayStr(),
-        note: `Setup ${String(setups().length + 1).padStart(2,'0')}`,
+        note: `Setup ${String(setups().length + 1).padStart(2, '0')}`,
         createdAt,
         updatedAt: createdAt,
         values: readValues()
       };
-      setups().unshift(version); activeId = version.id; saveHistory(); loadVersion(version.id);
-      status.textContent = '新版本'; showToast('已建立新版本');
+      setups().unshift(version);
+      activeId = version.id;
+      saveHistory();
+      loadVersion(version.id);
+      status.textContent = '新版本';
+      showToast('已建立新版本');
     });
 
     // 上方場地 / 日期 / 備註欄位操作與 Enter 跳轉
@@ -475,7 +541,6 @@
       });
     });
 
-    // 點擊負號快捷鍵時避免搶走輸入框焦點
     signBar.addEventListener('mousedown', e => e.preventDefault());
     signBar.addEventListener('touchstart', e => {
       if (e.target.closest('button')) e.preventDefault();
@@ -550,10 +615,16 @@
     });
 
     // 設定比較與差異高亮
-    const dialog = document.querySelector('#compare-dialog'), selectA = document.querySelector('#compare-a'), selectB = document.querySelector('#compare-b');
-    const diffOnlyCheckbox = document.querySelector('#diff-only'), diffCountBadge = document.querySelector('#diff-count');
+    const dialog = document.querySelector('#compare-dialog');
+    const selectA = document.querySelector('#compare-a');
+    const selectB = document.querySelector('#compare-b');
+    const diffOnlyCheckbox = document.querySelector('#diff-only');
+    const diffCountBadge = document.querySelector('#diff-count');
+
     const renderComparison = () => {
-      const a = setups().find(version => version.id === selectA.value), b = setups().find(version => version.id === selectB.value); if (!a || !b) return;
+      const a = setups().find(v => v.id === selectA.value);
+      const b = setups().find(v => v.id === selectB.value);
+      if (!a || !b) return;
       const rows = labels.map((label, index) => {
         const valA = a.values[index] || '—';
         const valB = b.values[index] || '—';
@@ -570,14 +641,18 @@
     };
 
     document.querySelector('#compare').addEventListener('click', () => {
-      const options = setups().map(version => `<option value="${version.id}">${getSetupTitle(version)}</option>`).join('');
-      selectA.innerHTML = options; selectB.innerHTML = options; selectA.value = activeId;
-      selectB.value = setups().find(version => version.id !== activeId)?.id || activeId; renderComparison(); dialog.showModal();
+      const options = setups().map(v => `<option value="${v.id}">${getSetupTitle(v)}</option>`).join('');
+      selectA.innerHTML = options;
+      selectB.innerHTML = options;
+      selectA.value = activeId;
+      selectB.value = setups().find(v => v.id !== activeId)?.id || activeId;
+      renderComparison();
+      openDialog(dialog);
     });
     selectA.addEventListener('change', renderComparison);
     selectB.addEventListener('change', renderComparison);
     diffOnlyCheckbox.addEventListener('change', renderComparison);
-    document.querySelector('[data-close]').addEventListener('click', () => dialog.close());
+    document.querySelector('[data-close]').addEventListener('click', () => closeDialog(dialog));
 
     // 車架管理（含刪除車架）
     const chassisDialog = document.querySelector('#chassis-dialog');
@@ -609,21 +684,31 @@
         </div>
       `).join('');
       document.querySelectorAll('[data-chassis-id]').forEach(button => button.addEventListener('click', () => {
-        activeChassisId = button.dataset.chassisId; activeId = activeChassis().setups[0].id; saveHistory(); loadVersion(activeId); chassisDialog.close();
+        activeChassisId = button.dataset.chassisId;
+        activeId = activeChassis().setups[0].id;
+        saveHistory();
+        loadVersion(activeId);
+        closeDialog(chassisDialog);
       }));
       document.querySelectorAll('[data-del-chassis]').forEach(button => button.addEventListener('click', () => deleteChassis(button.dataset.delChassis)));
     };
 
-    document.querySelector('#manage-chassis').addEventListener('click', () => { renderChassis(); chassisDialog.showModal(); });
-    document.querySelector('[data-chassis-close]').addEventListener('click', () => chassisDialog.close());
+    document.querySelector('#manage-chassis').addEventListener('click', () => { renderChassis(); openDialog(chassisDialog); });
+    document.querySelector('[data-chassis-close]').addEventListener('click', () => closeDialog(chassisDialog));
     const addChassisAction = () => {
       const nameInput = document.querySelector('#new-chassis-name');
       const name = nameInput.value.trim() || `車架 ${appData.chassis.length + 1}`;
       const createdAt = new Date().toISOString();
-      const setup = { id:crypto.randomUUID(), track:'', setupDate:todayStr(), note:'Setup 01', createdAt, updatedAt:createdAt, values:[...baseline] };
-      const chassis = { id:crypto.randomUUID(), name, createdAt, setups:[setup] };
-      appData.chassis.unshift(chassis); activeChassisId = chassis.id; activeId = setup.id; nameInput.value = '';
-      saveHistory(); loadVersion(activeId); chassisDialog.close(); showToast('已建立新車架');
+      const setup = { id: uid(), track: '', setupDate: todayStr(), note: 'Setup 01', createdAt, updatedAt: createdAt, values: [...baseline] };
+      const chassis = { id: uid(), name, createdAt, setups: [setup] };
+      appData.chassis.unshift(chassis);
+      activeChassisId = chassis.id;
+      activeId = setup.id;
+      nameInput.value = '';
+      saveHistory();
+      loadVersion(activeId);
+      closeDialog(chassisDialog);
+      showToast('已建立新車架');
     };
     document.querySelector('#add-chassis').addEventListener('click', addChassisAction);
     document.querySelector('#new-chassis-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addChassisAction(); } });
