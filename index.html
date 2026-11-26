@@ -10,9 +10,15 @@
     body { margin:0; background:#dedfe5; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC",sans-serif; letter-spacing:-.01em; }
     button, input, select { font:inherit; touch-action:manipulation; }
     .phone { min-height:100vh; max-width:430px; margin:auto; background:var(--wash); padding:env(safe-area-inset-top, 20px) 16px calc(88px + env(safe-area-inset-bottom)); }
-    header { display:flex; justify-content:space-between; align-items:center; padding:14px 4px 20px; }
-    h1 { margin:0; font-size:34px; letter-spacing:-1.3px; }
-    .more { border:0; background:transparent; color:var(--blue); font-size:17px; font-weight:600; padding:8px 6px; cursor:pointer; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:14px 4px 20px; }
+    h1 { margin:0; font-size:30px; letter-spacing:-1.2px; }
+    .header-actions { display:flex; align-items:center; gap:4px; }
+    .more { border:0; background:transparent; color:var(--blue); font-size:16px; font-weight:600; padding:8px 6px; cursor:pointer; white-space:nowrap; }
+    .sync-pill { display:inline-flex; align-items:center; gap:5px; border:1px solid #d5d8e2; border-radius:99px; background:var(--card); color:var(--ink); padding:5px 10px; font-size:12px; font-weight:600; cursor:pointer; }
+    .sync-dot { width:8px; height:8px; border-radius:50%; background:#9ca3af; }
+    .sync-dot.ok { background:var(--green); }
+    .sync-dot.busy { background:var(--amber-accent); }
+    .sync-dot.err { background:#dc2626; }
     .model-card { background:linear-gradient(135deg,#18202d,#323e51); color:#fff; border-radius:24px; padding:21px; box-shadow:0 10px 24px #1c223122; }
     .eyebrow { margin:0 0 12px; color:#bfc8d9; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:space-between; }
     .eyebrow strong { color:#fff; font-weight:700; }
@@ -82,6 +88,15 @@
     .new-chassis { display:grid; grid-template-columns:1fr auto; gap:8px; padding:0 16px 18px; }
     .new-chassis input { min-width:0; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--card); color:var(--ink); }
     .new-chassis button { border:0; border-radius:10px; padding:10px 14px; background:var(--blue); color:#fff; font-weight:600; cursor:pointer; }
+    .sync-box { padding:14px 16px 18px; display:flex; flex-direction:column; gap:12px; }
+    .sync-field { display:flex; flex-direction:column; gap:5px; font-size:13px; font-weight:600; color:var(--ink); }
+    .sync-field small { font-weight:400; color:var(--muted); font-size:12px; }
+    .sync-field input { border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--card); color:var(--ink); font-size:14px; }
+    .sync-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+    .sync-btn { border:0; border-radius:10px; padding:11px 10px; font-size:14px; font-weight:600; cursor:pointer; }
+    .sync-btn.primary { grid-column:1 / -1; background:var(--blue); color:#fff; }
+    .sync-btn.secondary { background:var(--card); color:var(--ink); border:1px solid var(--line); }
+    .sync-status-card { background:var(--card); border-radius:12px; padding:10px 12px; font-size:12px; color:var(--muted); line-height:1.5; }
     dialog { width:min(430px, calc(100% - 24px)); max-height:84vh; padding:0; border:0; border-radius:22px; background:var(--wash); color:var(--ink); box-shadow:0 18px 48px #11182755; }
     dialog::backdrop { background:#11182775; }
     .dialog-head { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; padding:16px 18px 12px; background:var(--card); border-bottom:1px solid var(--line); }
@@ -111,7 +126,16 @@
 </head>
 <body>
   <main class="phone">
-    <header><h1>RC Setup Record</h1><button class="more" id="manage-chassis" type="button">車架</button></header>
+    <header>
+      <h1>RC Setup Record</h1>
+      <div class="header-actions">
+        <button class="sync-pill" id="manage-sync" type="button" aria-label="雲端同步設定">
+          <span class="sync-dot" id="sync-dot"></span>
+          <span id="sync-label">本機</span>
+        </button>
+        <button class="more" id="manage-chassis" type="button">車架</button>
+      </div>
+    </header>
     <section class="model-card" aria-label="目前的 RC 模型設定">
       <p class="eyebrow"><span>目前車架：<strong id="chassis-display">RC Touring</strong></span></p>
       <div class="meta-fields">
@@ -200,6 +224,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite">設定已儲存</div>
   <div class="bottom"><button class="save" id="save" type="button">儲存設定</button></div>
+
   <dialog id="compare-dialog">
     <div class="dialog-head"><h2>比較設定</h2><button class="close" type="button" data-close>完成</button></div>
     <div class="compare-choice">
@@ -212,11 +237,35 @@
     </div>
     <div class="comparison" id="comparison" aria-live="polite"></div>
   </dialog>
+
   <dialog id="chassis-dialog">
     <div class="dialog-head"><h2>車架管理</h2><button class="close" type="button" data-chassis-close>完成</button></div>
     <div class="chassis-list" id="chassis-list"></div>
     <div class="new-chassis"><input id="new-chassis-name" placeholder="新車架名稱" aria-label="新車架名稱"><button class="btn-primary" id="add-chassis" type="button">新增</button></div>
   </dialog>
+
+  <dialog id="sync-dialog">
+    <div class="dialog-head"><h2>Google 試算表同步</h2><button class="close" type="button" data-sync-close>完成</button></div>
+    <div class="sync-box">
+      <label class="sync-field">
+        Apps Script 網頁應用程式網址
+        <input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+        <small>貼上 Google Apps Script 部署後的 /exec 網址</small>
+      </label>
+      <label class="sync-field">
+        個人同步代號（Sync ID）
+        <input id="sync-key" type="text" placeholder="例如：poan-8888（與車友區隔資料）">
+        <small>在手機與電腦輸入相同代號即可跨裝置同步</small>
+      </label>
+      <div class="sync-status-card" id="sync-info">尚未設定雲端連結，目前資料僅儲存於此瀏覽器。</div>
+      <div class="sync-actions">
+        <button class="sync-btn primary" id="save-sync-cfg" type="button">儲存設定並立即同步</button>
+        <button class="sync-btn secondary" id="pull-cloud" type="button">從試算表載入</button>
+        <button class="sync-btn secondary" id="push-cloud" type="button">上傳覆蓋試算表</button>
+      </div>
+    </div>
+  </dialog>
+
   <script>
     const uid = () => (window.crypto && typeof window.crypto.randomUUID === 'function')
       ? window.crypto.randomUUID()
@@ -224,6 +273,7 @@
 
     const inputs = [...document.querySelectorAll('.value')];
     const storeKey = 'rc-setup-book-v3';
+    const syncCfgKey = 'rc-setup-sync-cfg-v1';
     const legacyStoreKey = 'rc-setup-history-v2';
     const labels = inputs.map(input => input.getAttribute('aria-label').split('，')[0]);
     const baseline = inputs.map(input => input.value);
@@ -265,6 +315,39 @@
       };
     };
 
+    const normalizeAppData = raw => {
+      const data = raw && typeof raw === 'object' ? { ...raw } : {};
+      if (!Array.isArray(data.chassis) || !data.chassis.length) {
+        const initialChassisId = uid();
+        const rawSetups = Array.isArray(oldVersions) && oldVersions.length
+          ? oldVersions
+          : [{ id: uid(), track: '', setupDate: todayStr(), note: 'Setup 01', createdAt: now, updatedAt: now, values: oldValues || baseline }];
+        const setupsList = rawSetups.map(normalizeSetup);
+        return {
+          activeChassisId: initialChassisId,
+          activeSetupId: setupsList[0].id,
+          lastModified: now,
+          chassis: [{ id: initialChassisId, name: 'RC Touring', createdAt: now, setups: setupsList }]
+        };
+      }
+      data.chassis.forEach(chassis => {
+        chassis.id = chassis.id || uid();
+        chassis.name = chassis.name || '未命名車架';
+        chassis.setups = Array.isArray(chassis.setups) && chassis.setups.length
+          ? chassis.setups.map(normalizeSetup)
+          : [normalizeSetup({ note: 'Setup 01' })];
+      });
+      if (!data.chassis.some(c => c.id === data.activeChassisId)) {
+        data.activeChassisId = data.chassis[0].id;
+      }
+      const curCh = data.chassis.find(c => c.id === data.activeChassisId);
+      if (!curCh.setups.some(s => s.id === data.activeSetupId)) {
+        data.activeSetupId = curCh.setups[0].id;
+      }
+      data.lastModified = data.lastModified || now;
+      return data;
+    };
+
     const getSetupTitle = v => {
       const head = [v.track, v.setupDate].filter(Boolean).join(' · ');
       if (head && v.note) return `${head}（${v.note}）`;
@@ -274,30 +357,24 @@
     const getSetupPrimary = v => [v.track, v.setupDate].filter(Boolean).join(' · ') || v.note || v.name || '未命名設定';
     const getSetupSecondary = v => ([v.track, v.setupDate].some(Boolean) && v.note) ? v.note : '';
 
-    let appData = safeParse(storeKey, null);
-    if (!appData || !Array.isArray(appData.chassis) || !appData.chassis.length) {
-      const initialChassisId = uid();
-      const rawSetups = Array.isArray(oldVersions) && oldVersions.length
-        ? oldVersions
-        : [{ id: uid(), track: '', setupDate: todayStr(), note: 'Setup 01', createdAt: now, updatedAt: now, values: oldValues || baseline }];
-      const setupsList = rawSetups.map(normalizeSetup);
-      appData = {
-        activeChassisId: initialChassisId,
-        activeSetupId: setupsList[0].id,
-        chassis: [{ id: initialChassisId, name: 'RC Touring', createdAt: now, setups: setupsList }]
-      };
-    } else {
-      appData.chassis.forEach(chassis => {
-        chassis.id = chassis.id || uid();
-        chassis.name = chassis.name || '未命名車架';
-        chassis.setups = Array.isArray(chassis.setups) && chassis.setups.length
-          ? chassis.setups.map(normalizeSetup)
-          : [normalizeSetup({ note: 'Setup 01' })];
-      });
-    }
-
-    let activeChassisId = appData.chassis.some(c => c.id === appData.activeChassisId) ? appData.activeChassisId : appData.chassis[0].id;
+    let appData = normalizeAppData(safeParse(storeKey, null));
+    let activeChassisId = appData.activeChassisId;
     let activeId = appData.activeSetupId;
+
+    // 雲端同步設定（支援網址參數 ?api=...&key=... 方便分享）
+    const urlParams = new URLSearchParams(window.location.search);
+    let syncCfg = {
+      apiUrl: '',
+      syncKey: '',
+      lastSyncedAt: '',
+      ...safeParse(syncCfgKey, {})
+    };
+    if (urlParams.get('api')) syncCfg.apiUrl = urlParams.get('api').trim();
+    if (urlParams.get('key')) syncCfg.syncKey = urlParams.get('key').trim();
+
+    const saveSyncCfg = () => {
+      try { localStorage.setItem(syncCfgKey, JSON.stringify(syncCfg)); } catch {}
+    };
 
     const toast = document.querySelector('#toast');
     const status = document.querySelector('#status');
@@ -306,21 +383,14 @@
     const noteInput = document.querySelector('#setup-note');
     const trackChips = [...document.querySelectorAll('.track-chip')];
     const spoolButtons = [...document.querySelectorAll('.spool-btn')];
+    const syncDot = document.querySelector('#sync-dot');
+    const syncLabel = document.querySelector('#sync-label');
+    const syncInfo = document.querySelector('#sync-info');
 
     const activeChassis = () => appData.chassis.find(c => c.id === activeChassisId) || appData.chassis[0];
     const setups = () => activeChassis().setups;
     const activeVersion = () => setups().find(v => v.id === activeId) || setups()[0];
     if (!setups().some(v => v.id === activeId)) activeId = setups()[0].id;
-
-    const saveHistory = () => {
-      try {
-        appData.activeChassisId = activeChassis().id;
-        appData.activeSetupId = activeVersion().id;
-        localStorage.setItem(storeKey, JSON.stringify(appData));
-      } catch (err) {
-        console.warn('儲存失敗:', err);
-      }
-    };
 
     const readValues = () => inputs.map(input => input.value.trim());
     const formatDate = date => {
@@ -331,23 +401,109 @@
     const showToast = message => {
       toast.textContent = message;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
+      setTimeout(() => toast.classList.remove('show'), 2400);
+    };
+
+    const setSyncBadge = (state, text, detail) => {
+      syncDot.className = `sync-dot ${state || ''}`.trim();
+      syncLabel.textContent = text;
+      if (detail && syncInfo) syncInfo.textContent = detail;
+    };
+
+    const updateSyncStatusDisplay = () => {
+      if (!syncCfg.apiUrl || !syncCfg.syncKey) {
+        setSyncBadge('', '本機', '尚未設定雲端連結，目前資料僅儲存於此瀏覽器。');
+      } else {
+        const lastStr = syncCfg.lastSyncedAt ? formatDate(syncCfg.lastSyncedAt) : '尚未同步';
+        setSyncBadge('ok', '已連結', `代號：${syncCfg.syncKey}｜上次同步：${lastStr}`);
+      }
+    };
+
+    const pushToCloud = async (silent = true) => {
+      if (!syncCfg.apiUrl || !syncCfg.syncKey) return false;
+      setSyncBadge('busy', '同步中...');
+      try {
+        const updatedAt = appData.lastModified || new Date().toISOString();
+        const res = await fetch(syncCfg.apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ key: syncCfg.syncKey, updatedAt, data: appData })
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || '寫入失敗');
+        syncCfg.lastSyncedAt = json.updatedAt || updatedAt;
+        saveSyncCfg();
+        updateSyncStatusDisplay();
+        if (!silent) showToast('已同步至 Google 試算表');
+        return true;
+      } catch (err) {
+        setSyncBadge('err', '同步失敗', `無法寫入試算表（已先存於本機）：${err.message}`);
+        if (!silent) showToast('雲端同步失敗，已保留本機資料');
+        return false;
+      }
+    };
+
+    const pullFromCloud = async (forceOverwrite = false, silent = true) => {
+      if (!syncCfg.apiUrl || !syncCfg.syncKey) return false;
+      setSyncBadge('busy', '讀取中...');
+      try {
+        const url = `${syncCfg.apiUrl}${syncCfg.apiUrl.includes('?') ? '&' : '?'}key=${encodeURIComponent(syncCfg.syncKey)}&t=${Date.now()}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || '讀取失敗');
+
+        if (!json.found || !json.data) {
+          // 雲端尚無此代號資料，自動將目前本機資料初始化上去
+          await pushToCloud(true);
+          if (!silent) showToast('雲端尚無舊資料，已建立雲端備份');
+          return true;
+        }
+
+        const remoteTime = new Date(json.updatedAt || 0).getTime();
+        const localTime = new Date(appData.lastModified || 0).getTime();
+
+        if (forceOverwrite || remoteTime > localTime) {
+          appData = normalizeAppData(json.data);
+          activeChassisId = appData.activeChassisId;
+          activeId = appData.activeSetupId;
+          localStorage.setItem(storeKey, JSON.stringify(appData));
+          loadVersion(activeId);
+          if (!silent) showToast('已從 Google 試算表載入最新設定');
+        } else if (!silent) {
+          showToast('本機已是最新版本');
+        }
+
+        syncCfg.lastSyncedAt = new Date().toISOString();
+        saveSyncCfg();
+        updateSyncStatusDisplay();
+        return true;
+      } catch (err) {
+        setSyncBadge('err', '連線異常', `無法讀取試算表：${err.message}`);
+        if (!silent) showToast('讀取失敗，請檢查網址與權限');
+        return false;
+      }
+    };
+
+    const saveHistory = (syncCloud = true) => {
+      try {
+        appData.activeChassisId = activeChassis().id;
+        appData.activeSetupId = activeVersion().id;
+        appData.lastModified = new Date().toISOString();
+        localStorage.setItem(storeKey, JSON.stringify(appData));
+      } catch (err) {
+        console.warn('本機儲存失敗:', err);
+      }
+      if (syncCloud) pushToCloud(true);
     };
 
     const openDialog = dlg => {
-      if (typeof dlg.showModal === 'function') {
-        dlg.showModal();
-      } else {
-        dlg.setAttribute('open', '');
-      }
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
     };
 
     const closeDialog = dlg => {
-      if (typeof dlg.close === 'function') {
-        dlg.close();
-      } else {
-        dlg.removeAttribute('open');
-      }
+      if (typeof dlg.close === 'function') dlg.close();
+      else dlg.removeAttribute('open');
     };
 
     // 場地快速選單同步
@@ -426,7 +582,7 @@
       } else {
         renderHistory();
       }
-      saveHistory();
+      saveHistory(true);
       showToast(`已刪除「${getSetupPrimary(target)}」`);
     };
 
@@ -462,10 +618,10 @@
       version.note = noteInput.value.trim();
       version.values = readValues();
       version.updatedAt = new Date().toISOString();
-      saveHistory();
+      saveHistory(true);
       status.textContent = '剛剛儲存';
       renderHistory();
-      showToast('設定已更新');
+      showToast(syncCfg.apiUrl && syncCfg.syncKey ? '已儲存並同步至試算表' : '設定已更新');
     };
 
     document.querySelector('#save').addEventListener('click', saveCurrentSetup);
@@ -483,7 +639,7 @@
       };
       setups().unshift(version);
       activeId = version.id;
-      saveHistory();
+      saveHistory(true);
       loadVersion(version.id);
       status.textContent = '新版本';
       showToast('已建立新版本');
@@ -495,11 +651,8 @@
       el.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          if (arr[idx + 1]) {
-            arr[idx + 1].focus();
-          } else {
-            inputs[0]?.focus();
-          }
+          if (arr[idx + 1]) arr[idx + 1].focus();
+          else inputs[0]?.focus();
         }
       });
     });
@@ -549,15 +702,10 @@
     document.querySelector('#toggle-minus').addEventListener('click', () => {
       if (!activeToeInput) return;
       const raw = activeToeInput.value.trim();
-      if (raw === '') {
-        activeToeInput.value = '-';
-      } else if (raw === '-') {
-        activeToeInput.value = '';
-      } else if (raw.startsWith('-')) {
-        activeToeInput.value = raw.slice(1);
-      } else {
-        activeToeInput.value = `-${raw}`;
-      }
+      if (raw === '') activeToeInput.value = '-';
+      else if (raw === '-') activeToeInput.value = '';
+      else if (raw.startsWith('-')) activeToeInput.value = raw.slice(1);
+      else activeToeInput.value = `-${raw}`;
       status.textContent = '未儲存變更';
     });
 
@@ -582,11 +730,8 @@
         if (e.key === 'Enter') {
           e.preventDefault();
           const nextIdx = e.shiftKey ? idx - 1 : idx + 1;
-          if (inputs[nextIdx]) {
-            inputs[nextIdx].focus();
-          } else {
-            input.blur();
-          }
+          if (inputs[nextIdx]) inputs[nextIdx].focus();
+          else input.blur();
         } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
           const raw = input.value.trim();
           const num = parseFloat(raw);
@@ -667,7 +812,7 @@
         activeId = activeChassis().setups[0].id;
         loadVersion(activeId);
       }
-      saveHistory();
+      saveHistory(true);
       renderChassis();
       showToast(`已刪除車架「${target.name}」`);
     };
@@ -686,7 +831,7 @@
       document.querySelectorAll('[data-chassis-id]').forEach(button => button.addEventListener('click', () => {
         activeChassisId = button.dataset.chassisId;
         activeId = activeChassis().setups[0].id;
-        saveHistory();
+        saveHistory(false);
         loadVersion(activeId);
         closeDialog(chassisDialog);
       }));
@@ -705,7 +850,7 @@
       activeChassisId = chassis.id;
       activeId = setup.id;
       nameInput.value = '';
-      saveHistory();
+      saveHistory(true);
       loadVersion(activeId);
       closeDialog(chassisDialog);
       showToast('已建立新車架');
@@ -713,7 +858,63 @@
     document.querySelector('#add-chassis').addEventListener('click', addChassisAction);
     document.querySelector('#new-chassis-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addChassisAction(); } });
 
+    // Google 試算表同步設定視窗
+    const syncDialog = document.querySelector('#sync-dialog');
+    const syncUrlInput = document.querySelector('#sync-url');
+    const syncKeyInput = document.querySelector('#sync-key');
+
+    document.querySelector('#manage-sync').addEventListener('click', () => {
+      syncUrlInput.value = syncCfg.apiUrl || '';
+      syncKeyInput.value = syncCfg.syncKey || '';
+      updateSyncStatusDisplay();
+      openDialog(syncDialog);
+    });
+    document.querySelector('[data-sync-close]').addEventListener('click', () => closeDialog(syncDialog));
+
+    document.querySelector('#save-sync-cfg').addEventListener('click', async () => {
+      syncCfg.apiUrl = syncUrlInput.value.trim();
+      syncCfg.syncKey = syncKeyInput.value.trim();
+      saveSyncCfg();
+      if (!syncCfg.apiUrl || !syncCfg.syncKey) {
+        updateSyncStatusDisplay();
+        showToast('已切換為僅使用本機儲存');
+        return;
+      }
+      await pullFromCloud(false, false);
+    });
+
+    document.querySelector('#pull-cloud').addEventListener('click', async () => {
+      syncCfg.apiUrl = syncUrlInput.value.trim();
+      syncCfg.syncKey = syncKeyInput.value.trim();
+      saveSyncCfg();
+      if (!syncCfg.apiUrl || !syncCfg.syncKey) {
+        showToast('請先填寫網址與個人同步代號');
+        return;
+      }
+      if (confirm('確定要從 Google 試算表載入並覆蓋目前手機上的紀錄嗎？')) {
+        await pullFromCloud(true, false);
+      }
+    });
+
+    document.querySelector('#push-cloud').addEventListener('click', async () => {
+      syncCfg.apiUrl = syncUrlInput.value.trim();
+      syncCfg.syncKey = syncKeyInput.value.trim();
+      saveSyncCfg();
+      if (!syncCfg.apiUrl || !syncCfg.syncKey) {
+        showToast('請先填寫網址與個人同步代號');
+        return;
+      }
+      if (confirm('確定要用目前手機上的紀錄覆蓋 Google 試算表嗎？')) {
+        await pushToCloud(false);
+      }
+    });
+
+    // 初始化畫面與背景同步
     loadVersion(activeId);
+    updateSyncStatusDisplay();
+    if (syncCfg.apiUrl && syncCfg.syncKey) {
+      pullFromCloud(false, true);
+    }
   </script>
 </body>
 </html>
